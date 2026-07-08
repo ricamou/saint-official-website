@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Transparency — The SAINT Movement</title>
+<link rel="icon" type="image/png" href="favicon.png">
+  <meta name="description" content="Open Trust dashboard with live market data, official links, contract address, and transparency roadmap." />
+  <meta name="theme-color" content="#061827" />
+  <meta name="robots" content="index, follow" />
+
+  <meta property="og:title" content="Transparency — The SAINT Movement" />
+  <meta property="og:description" content="Open Trust dashboard with live market data, official links, contract address, and transparency roadmap." />
+  <meta property="og:image" content="https://www.saintfamily.org/assets/logo/saint-logo.jpg" />
+  <meta property="og:url" content="https://www.saintfamily.org/" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="canonical" href="https://www.saintfamily.org/" />
+  <link rel="icon" href="assets/logo/saint-logo.jpg" />
+  <link rel="preload" href="assets/logo/saint-logo.jpg" as="image" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="loader" id="loader">
+    <img src="assets/logo/saint-logo.jpg" alt="SAINT logo" />
+    <span>SAINT</span>
+  </div>
+
+  <div class="ambient-bg" aria-hidden="true">
+    <div class="mesh mesh-a"></div>
+    <div class="mesh mesh-b"></div>
+    <div class="mesh mesh-c"></div>
+    <div class="stars"></div>
+    <div class="noise"></div>
+  </div>
+
+  <header class="navbar" id="navbar">
+    <a class="brand" href="index.html" aria-label="SAINT home">
+      <img src="assets/logo/saint-logo.jpg" alt="SAINT logo" />
+      <span>SAINT</span>
+    </a>
+
+    <nav class="desktop-nav" aria-label="Main navigation">
+      <a class="" href="index.html" data-i18n="home">Home</a>
+<a class="" href="founders-vision.html" data-i18n="vision">Vision</a>
+<a class="active" href="transparency.html" data-i18n="transparency">Transparency</a>
+<a class="" href="creator-fund.html" data-i18n="creator">Creator Fund</a>
+<a class="" href="community.html" data-i18n="community">Community</a>
+    <a class="" href="contact.html" data-i18n="contact">Contact</a></nav>
+
+    <div class="nav-actions">
+      <div class="language-switcher"><button class="language-button" type="button">🌐 <span data-lang-current>English</span></button><div class="language-menu"><button type="button" data-lang="en">English</button><button type="button" data-lang="pt">Português</button><button type="button" data-lang="es">Español</button><button type="button" data-lang="zh">中文</button></div></div><button class="theme-toggle" id="themeToggle" aria-label="Toggle light and dark mode">
+        <span class="sun">☀</span><span class="moon">☾</span>
+      </button>
+      <a class="nav-cta" href="https://pump.fun/coin/GUdYAzh14TQcwUSBw79rnFJHZCv64fugTEsq1etDpump" target="_blank" rel="noopener" data-i18n="buy">Buy</a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Open menu">☰</button>
+    </div>
+  </header>
+
+  <aside class="mobile-nav" id="mobileNav">
+    <a class="" href="index.html" data-i18n="home">Home</a>
+<a class="" href="founders-vision.html" data-i18n="vision">Vision</a>
+<a class="active" href="transparency.html" data-i18n="transparency">Transparency</a>
+<a class="" href="creator-fund.html" data-i18n="creator">Creator Fund</a>
+<a class="" href="community.html" data-i18n="community">Community</a>
+    <a href="https://pump.fun/coin/GUdYAzh14TQcwUSBw79rnFJHZCv64fugTEsq1etDpump" target="_blank" rel="noopener" data-i18n="pump">Buy on Pump.fun</a>
+    <a href="#" onclick="openPhantomApp(event)" target="_blank" rel="noopener" data-i18n="phantom">Open Phantom</a>
+    <a href="https://t.co/1RIIzHQs0j" target="_blank" rel="noopener">Telegram</a>
+    <a href="https://x.com/SaintDevSol" target="_blank" rel="noopener">X Official</a>
+  </aside>
+
+  <main>
+    
+<section class="subhero page-section">
+  <div class="container narrow reveal">
+    <p class="eyebrow" data-i18n="transparency">Transparency</p>
+    <h1>Open Trust.</h1>
+    <p>Live market signals, official links, and a clear view of what exists today and what is being built.</p>
+  </div>
+</section>
+<section class="page-section container">
+  <div class="transparency-center reveal">
+    <div class="center-top">
+      <div class="status-line"><span class="live-dot"></span><strong id="dataStatus">Loading live data…</strong></div>
+      <div class="center-actions"><button class="small-pill" id="refreshData">Refresh</button><a class="small-pill" href="https://dexscreener.com/solana/GUdYAzh14TQcwUSBw79rnFJHZCv64fugTEsq1etDpump" target="_blank" rel="noopener">DexScreener</a></div>
+    </div>
+    <div class="hero-metrics">
+      <article><span>Price</span><strong id="priceUsd">—</strong><small id="priceChange">24h —</small></article>
+      <article><span>Market Cap</span><strong id="marketCap">—</strong><small>Public market data</small></article>
+      <article><span>Liquidity</span><strong id="liquidity">—</strong><small>USD liquidity</small></article>
+      <article><span>Volume 24h</span><strong id="volume24h">—</strong><small>Trading activity</small></article>
+      <article><span>Transactions 24h</span><strong id="txns24h">—</strong><small id="txnsSplit">Buys / Sells</small></article>
+      <article><span>Holders</span><strong>Solscan</strong><small><a href="https://solscan.io/token/GUdYAzh14TQcwUSBw79rnFJHZCv64fugTEsq1etDpump" target="_blank" rel="noopener">View holders →</a></small></article>
+    </div>
+    <div class="analytics-row">
+      <div class="health-card"><div class="score-ring"><span id="healthScore">—</span></div><div><p class="eyebrow">Health Score</p><h3 id="healthLabel">Calculating…</h3><p id="healthDescription">Based on liquidity, volume, transactions, and price signals.</p></div></div>
+      <div class="mini-chart-card"><div class="chart-header"><span>Market Pulse</span><strong id="chartLabel">Activity</strong></div><canvas id="pulseChart" width="520" height="180"></canvas></div>
+    </div>
+  </div>
+</section>
+<section class="page-section container">
+  <div class="section-heading reveal"><p class="eyebrow">Trust Signals</p><h2>Verify before you trust.</h2></div>
+  <div class="trust-grid large">
+    <div class="trust-item live"><span>Verified</span><strong data-i18n="ca">Official CA</strong><p>CA: GUdYAzh14TQcwUSBw79rnFJHZCv64fugTEsq1etDpump</p></div>
+    <div class="trust-item live"><span>Official</span><strong>X Account</strong><p><a href="https://x.com/SaintDevSol" target="_blank" rel="noopener">@SaintDevSol</a></p></div>
+    <div class="trust-item live"><span>Official</span><strong>Telegram</strong><p><a href="https://t.co/1RIIzHQs0j" target="_blank" rel="noopener">Join the community</a></p></div>
+    <div class="trust-item"><span>Being Built</span><strong>Community Wallet</strong><p>Reserved for future ecosystem transparency.</p></div>
+    <div class="trust-item"><span>Future</span><strong data-i18n="creator">Creator Fund</strong><p>Future public framework for creator and growth support.</p></div>
+    <div class="trust-item"><span>Future</span><strong>Governance</strong><p>Community voting and decision-making as the ecosystem matures.</p></div>
+  </div>
+</section>
+
+  </main>
+
+  <footer class="footer">
+    <div class="footer-brand">
+      <img src="assets/logo/saint-logo.jpg" alt="SAINT logo" />
+      <div><strong>The SAINT Movement</strong><span data-i18n="heroSubtitle">A Crypto Community With a Soul.</span></div>
+    </div>
+
+    <div class="footer-links">
+      <a href="https://x.com/SaintDevSol" target="_blank" rel="noopener">X</a>
+      <a href="https://t.co/1RIIzHQs0j" target="_blank" rel="noopener">Telegram</a>
+      <a href="https://pump.fun/coin/GUdYAzh14TQcwUSBw79rnFJHZCv64fugTEsq1etDpump" target="_blank" rel="noopener">Pump.fun</a>
+      <a href="https://dexscreener.com/solana/GUdYAzh14TQcwUSBw79rnFJHZCv64fugTEsq1etDpump" target="_blank" rel="noopener">DexScreener</a>
+      <button onclick="copyContract()">Copy CA</button>
+    </div>
+
+    <p class="disclaimer">© 2026 $SAINT. Cryptocurrency involves risk. Nothing on this website is financial advice.</p>
+  </footer>
+
+  <div class="toast" id="toast">Copied</div>
+
+  <script>
+    window.SAINT_CONFIG = {
+      contract: "GUdYAzh14TQcwUSBw79rnFJHZCv64fugTEsq1etDpump",
+      dexApi: "https://api.dexscreener.com/tokens/v1/solana/GUdYAzh14TQcwUSBw79rnFJHZCv64fugTEsq1etDpump",
+      dexUrl: "https://dexscreener.com/solana/GUdYAzh14TQcwUSBw79rnFJHZCv64fugTEsq1etDpump",
+      pumpUrl: "https://pump.fun/coin/GUdYAzh14TQcwUSBw79rnFJHZCv64fugTEsq1etDpump",
+      phantomUrl:"phantom://",
+      solscanUrl: "https://solscan.io/token/GUdYAzh14TQcwUSBw79rnFJHZCv64fugTEsq1etDpump"
+    };
+  </script>
+  <script src="js/app.js" defer></script>
+</body>
+</html>
