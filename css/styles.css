@@ -326,3 +326,201 @@ html[data-theme="light"] .language-modal-card {
     height: 74px;
   }
 }
+
+
+/* v5.4 Animated mascot */
+.mascot-motion-section {
+  padding-top: 70px;
+}
+
+.mascot-motion-panel {
+  position: relative;
+  display: grid;
+  grid-template-columns: .95fr 1.05fr;
+  gap: 34px;
+  align-items: center;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 44px;
+  background:
+    radial-gradient(circle at 78% 28%, rgba(230,195,106,.22), transparent 36%),
+    linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.045));
+  backdrop-filter: blur(22px);
+  box-shadow: var(--shadow);
+  padding: 42px;
+}
+
+.mascot-motion-copy {
+  position: relative;
+  z-index: 4;
+}
+
+.mascot-motion-copy h2 {
+  margin-top: 12px;
+}
+
+.mascot-motion-copy p {
+  max-width: 560px;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+.mascot-motion-buttons {
+  justify-content: flex-start;
+}
+
+.mascot-motion-art {
+  position: relative;
+  min-height: 580px;
+  display: grid;
+  place-items: center;
+  perspective: 900px;
+}
+
+.mascot-motion-art img {
+  position: relative;
+  z-index: 5;
+  width: min(460px, 100%);
+  border-radius: 32px;
+  filter:
+    drop-shadow(0 34px 55px rgba(0,0,0,.38))
+    drop-shadow(0 0 35px rgba(230,195,106,.28));
+  animation: saintMascotFloat 4.8s ease-in-out infinite;
+  transform-origin: center bottom;
+  will-change: transform;
+}
+
+.mascot-motion-panel:hover .mascot-motion-art img {
+  animation-play-state: paused;
+  transform: translateY(-10px) rotateX(3deg) rotateY(-4deg) scale(1.02);
+}
+
+.mascot-motion-glow {
+  position: absolute;
+  z-index: 1;
+  width: 390px;
+  height: 390px;
+  border-radius: 999px;
+  background: rgba(230,195,106,.30);
+  filter: blur(76px);
+  animation: saintMascotGlow 3.8s ease-in-out infinite;
+}
+
+.mascot-motion-ring {
+  position: absolute;
+  z-index: 2;
+  border: 1px solid rgba(230,195,106,.26);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ring-a {
+  width: 440px;
+  height: 150px;
+  animation: saintMascotOrbit 14s linear infinite;
+}
+
+.ring-b {
+  width: 520px;
+  height: 180px;
+  opacity: .65;
+  animation: saintMascotOrbitReverse 20s linear infinite;
+}
+
+.mascot-motion-art::after {
+  content: "";
+  position: absolute;
+  z-index: 3;
+  width: 58%;
+  height: 18px;
+  bottom: 34px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(0,0,0,.38), transparent 70%);
+  filter: blur(7px);
+  animation: saintMascotShadow 4.8s ease-in-out infinite;
+}
+
+@keyframes saintMascotFloat {
+  0%, 100% {
+    transform: translateY(0) rotate(-.7deg) scale(1);
+  }
+  50% {
+    transform: translateY(-18px) rotate(.7deg) scale(1.012);
+  }
+}
+
+@keyframes saintMascotGlow {
+  0%, 100% {
+    opacity: .55;
+    transform: scale(.94);
+  }
+  50% {
+    opacity: .92;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes saintMascotOrbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes saintMascotOrbitReverse {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes saintMascotShadow {
+  0%, 100% {
+    transform: scaleX(.95);
+    opacity: .35;
+  }
+  50% {
+    transform: scaleX(.78);
+    opacity: .22;
+  }
+}
+
+@media(max-width: 980px) {
+  .mascot-motion-panel {
+    grid-template-columns: 1fr;
+    padding: 30px;
+  }
+
+  .mascot-motion-copy {
+    text-align: center;
+  }
+
+  .mascot-motion-copy p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .mascot-motion-buttons {
+    justify-content: center;
+  }
+
+  .mascot-motion-art {
+    min-height: auto;
+  }
+}
+
+@media(max-width: 640px) {
+  .mascot-motion-panel {
+    padding: 22px;
+    border-radius: 32px;
+  }
+
+  .mascot-motion-art img {
+    width: min(360px, 100%);
+    border-radius: 24px;
+  }
+
+  .ring-a,
+  .ring-b {
+    display: none;
+  }
+}
