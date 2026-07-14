@@ -1,12 +1,8 @@
-SAINT v5.9 Premium Polish
+SAINT v6.1
 
-Included:
-- refined desktop and mobile navigation
-- improved touch targets and accessibility
-- responsive Sanctuary layout
-- more resilient holder verification API
-- optional SOLANA_RPC_URL environment variable support
-- reduced-motion accessibility
-- performance-oriented image loading
-
-Deploy normally through GitHub + Vercel.
+Changes:
+- Holder verification remains active.
+- Verified holders can click Enter The Sanctuary.
+- Instead of opening Telegram, a premium Coming Soon modal is shown.
+- The modal includes the official Family First message.
+- On launch day, only the Enter button behavior needs to be changed.

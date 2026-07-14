@@ -202,3 +202,34 @@ window.addEventListener("offline", () => {
   const status = document.getElementById("statusText");
   if (status) status.textContent = "You appear to be offline. Reconnect and try again.";
 });
+
+
+function openSanctuaryComingSoonModal() {
+  const modal = document.getElementById("sanctuaryComingSoonModal");
+  if (!modal) return;
+
+  modal.classList.add("open");
+  modal.setAttribute("aria-hidden", "false");
+  document.body.classList.add("sanctuary-modal-open");
+}
+
+function closeSanctuaryComingSoonModal() {
+  const modal = document.getElementById("sanctuaryComingSoonModal");
+  if (!modal) return;
+
+  modal.classList.remove("open");
+  modal.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("sanctuary-modal-open");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll("[data-close-sanctuary-modal]").forEach((element) => {
+    element.addEventListener("click", closeSanctuaryComingSoonModal);
+  });
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeSanctuaryComingSoonModal();
+  }
+});
