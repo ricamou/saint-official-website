@@ -549,3 +549,19 @@ html[data-theme="light"] .language-modal-card {
 .sanctuary-actions{display:flex;gap:13px;flex-wrap:wrap;margin-top:26px}.disabled{opacity:.38;pointer-events:none}.sanctuary-note{font-size:13px!important;margin-top:22px}
 @media(max-width:980px){.sanctuary-grid{grid-template-columns:1fr}.sanctuary-copy{text-align:center}.sanctuary-copy h1{margin-left:auto}.sanctuary-mascot{min-height:500px}.sanctuary-cards{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:640px){.sanctuary-input{flex-direction:column}.sanctuary-input button{min-height:52px}.sanctuary-cards{grid-template-columns:1fr}.sanctuary-result{padding:24px}.guardian-message{right:10px}.holder-progress>div:first-child{flex-direction:column;gap:8px}}
+
+
+/* v5.8 Mobile Sanctuary menu fix */
+@media (max-width: 900px) {
+  .mobile-nav {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-top: 110px;
+    padding-bottom: 60px;
+    max-height: 100dvh;
+  }
+
+  .mobile-nav a {
+    flex: 0 0 auto;
+  }
+}
