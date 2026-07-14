@@ -40,12 +40,13 @@ window.addEventListener("scroll", () => navbar?.classList.toggle("scrolled", win
 const menuToggle = document.getElementById("menuToggle");
 const mobileNav = document.getElementById("mobileNav");
 menuToggle?.addEventListener("click", () => {
-  mobileNav.classList.toggle("open");
-  document.body.classList.toggle("menu-open");
+  const isOpen = mobileNav?.classList.toggle("open");
+  document.body.classList.toggle("menu-open", Boolean(isOpen));
+  menuToggle.setAttribute("aria-expanded", String(Boolean(isOpen)));
+  menuToggle.textContent = isOpen ? "✕" : "☰";
 });
 mobileNav?.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => {
-  mobileNav.classList.remove("open");
-  document.body.classList.remove("menu-open");
+  closeMobileMenu();
 }));
 
 const observer = new IntersectionObserver((entries) => {
@@ -217,4 +218,21 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   document.body.classList.add("language-modal-open");
+});
+
+
+function closeMobileMenu() {
+  if (!mobileNav || !menuToggle) return;
+  mobileNav.classList.remove("open");
+  document.body.classList.remove("menu-open");
+  menuToggle.setAttribute("aria-expanded", "false");
+  menuToggle.textContent = "☰";
+}
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") closeMobileMenu();
+});
+
+window.addEventListener("resize", () => {
+  if (window.innerWidth > 900) closeMobileMenu();
 });

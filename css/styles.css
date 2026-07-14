@@ -877,3 +877,41 @@ img {
     transition-duration: .001ms !important;
   }
 }
+
+
+/* v6.0 definitive mobile menu fix */
+body.menu-open {
+  overflow: hidden;
+}
+
+@media (max-width: 900px) {
+  .mobile-nav {
+    display: none !important;
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    padding: 120px 24px 70px;
+    overflow-y: auto;
+    max-height: 100dvh;
+    background: rgba(4,18,30,.98);
+    backdrop-filter: blur(24px);
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mobile-nav.open {
+    display: flex !important;
+  }
+
+  .navbar {
+    z-index: 60;
+  }
+
+  .menu-toggle {
+    position: relative;
+    z-index: 61;
+  }
+}
