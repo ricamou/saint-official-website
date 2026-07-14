@@ -1,0 +1,11 @@
+SAINT v5.7
+
+This version includes a Vercel Serverless Function:
+
+api/check-holder.js
+
+The Sanctuary page now calls:
+
+POST /api/check-holder
+
+No environment variable is required for this test version.
