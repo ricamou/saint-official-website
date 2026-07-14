@@ -50,7 +50,7 @@ async function verifyHolder(address) {
     renderResult(address, Number(data.balance || 0));
   } catch (error) {
     console.error(error);
-    renderError("Blockchain query failed. Please try again.");
+    renderError("The Solana network is busy. Please wait a moment and try again.");
   } finally {
     setScanning(false);
   }
@@ -189,3 +189,16 @@ function formatToken(value) {
     maximumFractionDigits: 2
   }).format(Number(value || 0));
 }
+
+
+window.addEventListener("online", () => {
+  const status = document.getElementById("statusText");
+  if (status && status.textContent.includes("network")) {
+    status.textContent = "Connection restored. You can verify the wallet again.";
+  }
+});
+
+window.addEventListener("offline", () => {
+  const status = document.getElementById("statusText");
+  if (status) status.textContent = "You appear to be offline. Reconnect and try again.";
+});

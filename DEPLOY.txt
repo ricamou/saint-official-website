@@ -1,11 +1,12 @@
-SAINT v5.7
+SAINT v5.9 Premium Polish
 
-This version includes a Vercel Serverless Function:
+Included:
+- refined desktop and mobile navigation
+- improved touch targets and accessibility
+- responsive Sanctuary layout
+- more resilient holder verification API
+- optional SOLANA_RPC_URL environment variable support
+- reduced-motion accessibility
+- performance-oriented image loading
 
-api/check-holder.js
-
-The Sanctuary page now calls:
-
-POST /api/check-holder
-
-No environment variable is required for this test version.
+Deploy normally through GitHub + Vercel.

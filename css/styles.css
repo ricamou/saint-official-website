@@ -565,3 +565,315 @@ html[data-theme="light"] .language-modal-card {
     flex: 0 0 auto;
   }
 }
+
+
+/* v5.9 Premium polish */
+:root {
+  --radius-xl: 38px;
+  --radius-lg: 26px;
+  --focus-ring: 0 0 0 4px rgba(230, 195, 106, .18);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  overflow-x: hidden;
+  text-rendering: optimizeLegibility;
+}
+
+a,
+button,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a {
+  touch-action: manipulation;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 1px solid rgba(230,195,106,.75);
+  box-shadow: var(--focus-ring);
+}
+
+.navbar {
+  transition:
+    background .25s ease,
+    border-color .25s ease,
+    transform .25s ease,
+    box-shadow .25s ease;
+}
+
+.navbar.scrolled {
+  box-shadow: 0 18px 55px rgba(0,0,0,.16);
+}
+
+.desktop-nav a,
+.mobile-nav a,
+.footer-links a {
+  position: relative;
+}
+
+.desktop-nav a::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  right: 50%;
+  bottom: -8px;
+  height: 2px;
+  border-radius: 999px;
+  background: var(--gold);
+  transition: left .2s ease, right .2s ease;
+}
+
+.desktop-nav a:hover::after,
+.desktop-nav a.active::after {
+  left: 14%;
+  right: 14%;
+}
+
+.btn,
+.nav-cta,
+.sanctuary-input button,
+.contact-form-card button {
+  min-height: 48px;
+  transition:
+    transform .18s ease,
+    box-shadow .18s ease,
+    opacity .18s ease;
+}
+
+.btn:hover,
+.nav-cta:hover,
+.sanctuary-input button:hover,
+.contact-form-card button:hover {
+  transform: translateY(-2px);
+}
+
+.btn:active,
+.nav-cta:active,
+.sanctuary-input button:active,
+.contact-form-card button:active {
+  transform: translateY(0) scale(.985);
+}
+
+.card,
+.metric-card,
+.contact-info-panel,
+.contact-form-card,
+.mascot-motion-panel,
+.sanctuary-result,
+.sanctuary-cards article {
+  transition:
+    transform .25s ease,
+    border-color .25s ease,
+    box-shadow .25s ease;
+}
+
+.card:hover,
+.metric-card:hover,
+.contact-info-panel:hover,
+.contact-form-card:hover,
+.sanctuary-cards article:hover {
+  transform: translateY(-4px);
+  border-color: rgba(230,195,106,.28);
+}
+
+img {
+  max-width: 100%;
+}
+
+.sanctuary-input {
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.sanctuary-input:focus-within {
+  border-color: rgba(230,195,106,.55);
+  box-shadow: var(--focus-ring);
+}
+
+.sanctuary-input input {
+  font-size: 16px;
+}
+
+.sanctuary-status {
+  transition: border-color .25s ease, background .25s ease;
+}
+
+.sanctuary-status.scanning {
+  border-color: rgba(230,195,106,.38);
+  background: rgba(230,195,106,.07);
+}
+
+.sanctuary-result.holder-success {
+  animation: sanctuaryUnlock .65s ease both;
+}
+
+@keyframes sanctuaryUnlock {
+  0% {
+    opacity: .65;
+    transform: scale(.985);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 1100px) {
+  .desktop-nav {
+    gap: 18px;
+  }
+
+  .desktop-nav a {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 900px) {
+  .navbar {
+    width: calc(100% - 24px);
+    top: 12px;
+    padding: 12px 14px;
+  }
+
+  .brand img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .nav-actions {
+    gap: 8px;
+  }
+
+  .theme-toggle,
+  .menu-toggle,
+  .language-button {
+    min-width: 48px;
+    width: 48px;
+    height: 48px;
+  }
+
+  .mobile-nav {
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 8px;
+    padding: 120px 24px 70px;
+    background: rgba(4,18,30,.98);
+    backdrop-filter: blur(24px);
+  }
+
+  .mobile-nav a {
+    width: min(520px, 100%);
+    margin-inline: auto;
+    padding: 13px 18px;
+    border: 1px solid transparent;
+    border-radius: 16px;
+    font-size: clamp(24px, 7vw, 40px);
+    line-height: 1.15;
+  }
+
+  .mobile-nav a:hover,
+  .mobile-nav a:focus-visible {
+    border-color: rgba(230,195,106,.22);
+    background: rgba(255,255,255,.055);
+  }
+
+  .sanctuary-page {
+    padding-top: 125px;
+  }
+
+  .sanctuary-copy {
+    text-align: left;
+  }
+
+  .sanctuary-copy h1 {
+    margin-left: 0;
+  }
+
+  .sanctuary-warning {
+    border-radius: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .page-section {
+    padding-top: 70px;
+    padding-bottom: 70px;
+  }
+
+  .container {
+    width: min(100% - 28px, var(--container));
+  }
+
+  .hero h1,
+  .subhero h1,
+  .sanctuary-copy h1 {
+    text-wrap: balance;
+  }
+
+  .button-row,
+  .sanctuary-actions,
+  .contact-socials {
+    width: 100%;
+  }
+
+  .button-row .btn,
+  .sanctuary-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .sanctuary-mascot {
+    min-height: 420px;
+  }
+
+  .sanctuary-mascot img {
+    width: min(390px, 100%);
+  }
+
+  .guardian-message {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    margin-top: -20px;
+    max-width: 100%;
+    border-radius: 20px;
+    text-align: center;
+  }
+
+  .sanctuary-result {
+    border-radius: 28px;
+  }
+
+  .sanctuary-cards article {
+    min-height: 112px;
+  }
+
+  .footer {
+    gap: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+}
