@@ -1,8 +1,5 @@
-SAINT v6.1
+SAINT v6.2 — Definitive Sanctuary button fix
 
-Changes:
-- Holder verification remains active.
-- Verified holders can click Enter The Sanctuary.
-- Instead of opening Telegram, a premium Coming Soon modal is shown.
-- The modal includes the official Family First message.
-- On launch day, only the Enter button behavior needs to be changed.
+- Enter The Sanctuary no longer opens t.co or Telegram.
+- Verified holders see the premium Coming Soon modal.
+- The Telegram footer link on the Sanctuary page is disabled until launch.

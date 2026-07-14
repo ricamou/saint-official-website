@@ -91,11 +91,15 @@ function renderResult(address, balance) {
   const buy = document.getElementById("buySaintButton");
 
   if (holder) {
-    enter.href = SC.telegram;
-    enter.target = "_blank";
-    enter.rel = "noopener";
+    enter.href = "#";
+    enter.removeAttribute("target");
+    enter.removeAttribute("rel");
     enter.classList.remove("disabled");
     enter.setAttribute("aria-disabled", "false");
+    enter.onclick = (event) => {
+      event.preventDefault();
+      openSanctuaryComingSoonModal();
+    };
     buy.style.display = "none";
   } else {
     enter.href = "#";
@@ -231,5 +235,20 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     closeSanctuaryComingSoonModal();
+  }
+});
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const enterButton = document.getElementById("enterSanctuaryButton");
+
+  if (enterButton) {
+    enterButton.addEventListener("click", (event) => {
+      if (!enterButton.classList.contains("disabled")) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        openSanctuaryComingSoonModal();
+      }
+    }, true);
   }
 });
