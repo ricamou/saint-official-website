@@ -289,6 +289,22 @@ function setText(id, value) { const el = document.getElementById(id); if (el) el
 function abbreviate(address) { return address.slice(0, 6) + "..." + address.slice(-6); }
 
 
+
+async function readApiResponse(response) {
+  const contentType = response.headers.get("content-type") || "";
+
+  if (contentType.includes("application/json")) {
+    return response.json();
+  }
+
+  const text = await response.text();
+
+  return {
+    ok: false,
+    error: text || `Server returned HTTP ${response.status}`
+  };
+}
+
 async function signOwnershipMessage() {
   const provider = walletState.provider;
   const publicKey = walletState.publicKey;
@@ -320,7 +336,7 @@ async function signOwnershipMessage() {
       body: JSON.stringify({ wallet: publicKey })
     });
 
-    const requestData = await requestResponse.json();
+    const requestData = await readApiResponse(requestResponse);
 
     if (!requestResponse.ok || !requestData.ok) {
       throw new Error(
@@ -360,7 +376,7 @@ async function signOwnershipMessage() {
       })
     });
 
-    const verifyData = await verifyResponse.json();
+    const verifyData = await readApiResponse(verifyResponse);
 
     if (!verifyResponse.ok || !verifyData.ok) {
       throw new Error(
@@ -386,7 +402,7 @@ async function signOwnershipMessage() {
     setGuardianMessage(
       cancelled
         ? "The signature was cancelled. You can try again when ready."
-        : "I could not verify the signature. Please try again."
+        : "Authentication could not start. Please check the displayed message."
     );
   } finally {
     if (!walletState.ownershipVerified) {

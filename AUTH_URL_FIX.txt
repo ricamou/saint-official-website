@@ -1,0 +1,12 @@
+SAINT v7.4.2.1 — Authentication URL Fix
+
+Corrected:
+- Normalizes SUPABASE_URL before creating the Supabase client.
+- Accepts and converts a Supabase dashboard project URL if pasted by mistake.
+- Removes accidental /rest/v1, /auth/v1 and trailing paths.
+- Validates SUPABASE_SERVICE_ROLE_KEY.
+- Displays the real backend error in the Sanctuary interface.
+- Keeps all Sprint 4.2 holder verification functionality.
+
+Vercel SUPABASE_URL should ideally be:
+https://YOUR_PROJECT_REFERENCE.supabase.co

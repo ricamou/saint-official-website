@@ -71,7 +71,8 @@ module.exports = async function handler(req, res) {
       return sendJson(res, 500, {
         ok: false,
         error: error.message || "Unable to create authentication request",
-        details: error
+        code: error.code || null,
+        hint: error.hint || null
       });
     }
 
@@ -86,8 +87,7 @@ module.exports = async function handler(req, res) {
     console.error("Auth request error:", error);
     return sendJson(res, 500, {
       ok: false,
-      error: error?.message || "Authentication service is not configured",
-      stack: error?.stack || null
+      error: error?.message || "Authentication service is not configured"
     });
   }
 };
