@@ -1,0 +1,24 @@
+SAINT SANCTUARY — SPRINT 4.3
+PROTECTED TELEGRAM ACCESS
+
+In Vercel, add this Environment Variable:
+
+Name:
+TELEGRAM_SANCTUARY_URL
+
+Value:
+https://t.me/+qVHC64RVm0w4MTg0
+
+Apply it to:
+Production and Preview
+
+Then redeploy the project.
+
+How it works:
+- The Telegram invitation is not stored in sanctuary.html or sanctuary.js.
+- Enter The Sanctuary calls /api/sanctuary/access.
+- The backend confirms the secure session.
+- The backend confirms ownership_verified = true.
+- The backend confirms sanctuary_access = true.
+- The backend confirms the balance meets the minimum requirement.
+- Only then is the private Telegram link returned.

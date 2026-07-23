@@ -36,6 +36,10 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("connectWalletButton")?.addEventListener("click", openWalletSelector);
   document.getElementById("disconnectWalletButton")?.addEventListener("click", disconnectWallet);
   document.getElementById("signMessageButton")?.addEventListener("click", signOwnershipMessage);
+  document.getElementById("enterSanctuaryButton")?.addEventListener(
+    "click",
+    enterTheSanctuary
+  );
 
   document.querySelectorAll("[data-close-wallet-selector]").forEach((el) => {
     el.addEventListener("click", closeWalletSelector);
@@ -661,4 +665,68 @@ function formatSaint(value) {
   return new Intl.NumberFormat("en-US", {
     maximumFractionDigits: 2
   }).format(Number(value || 0));
+}
+
+
+async function enterTheSanctuary(event) {
+  event.preventDefault();
+
+  const button = document.getElementById("enterSanctuaryButton");
+
+  if (!button || button.classList.contains("disabled")) {
+    setStatus(
+      "You need at least 1,000,000 SAINT to enter the Sanctuary.",
+      "warning"
+    );
+    return;
+  }
+
+  const originalText = button.textContent;
+
+  button.classList.add("loading");
+  button.setAttribute("aria-busy", "true");
+  button.textContent = "Opening Sanctuary...";
+
+  setStatus("Preparing your private Sanctuary access...", "scanning");
+  setGuardianMessage("Welcome, Saint. I am opening the gates.");
+
+  try {
+    const response = await fetch("/api/sanctuary/access", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({})
+    });
+
+    const data = await readApiResponse(response);
+
+    if (!response.ok || !data.ok || !data.telegramUrl) {
+      throw new Error(
+        data.error || "Unable to retrieve the private Sanctuary invite."
+      );
+    }
+
+    setStatus("Access granted. Opening the private Telegram...", "success");
+
+    window.setTimeout(() => {
+      window.location.href = data.telegramUrl;
+    }, 650);
+  } catch (error) {
+    console.error("Sanctuary access failed:", error);
+
+    button.classList.remove("loading");
+    button.removeAttribute("aria-busy");
+    button.textContent = originalText;
+
+    setStatus(
+      error?.message || "Unable to open the Sanctuary. Please try again.",
+      "error"
+    );
+    setGuardianMessage(
+      "The gates could not be opened. Please try again."
+    );
+  }
 }
