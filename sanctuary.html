@@ -4,9 +4,11 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>The Sanctuary — $SAINT</title>
 <meta name="description" content="Verify a public Solana wallet address and enter The SAINT Holders Sanctuary.">
-<link rel="icon" href="favicon.png"><link rel="stylesheet" href="css/styles.css">
+<link rel="icon" type="image/png" sizes="512x512" href="favicon.png"><link rel="stylesheet" href="css/styles.css">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/logo/apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
 </head>
-<body>
+<body class="sanctuary-page-v3">
 <div class="ambient-bg"><div class="mesh mesh-a"></div><div class="mesh mesh-b"></div><div class="stars"></div></div>
 <header class="navbar" id="navbar">
 <a class="brand" href="index.html"><img src="assets/logo/saint-logo.jpg"><span>SAINT</span></a>
@@ -23,8 +25,8 @@
 </aside>
 
 <main>
-<section class="sanctuary-page">
-<div class="container sanctuary-grid">
+<section class="sanctuary-page sanctuary-page-refined">
+<div class="container sanctuary-grid sanctuary-grid-v3">
 <div class="sanctuary-copy reveal">
 <p class="eyebrow">The Holders Sanctuary</p>
 <h1>Welcome, Saint.</h1>
@@ -69,13 +71,36 @@
 <div class="sanctuary-mascot reveal">
 <div class="sanctuary-glow"></div>
 <img src="assets/mascot/saint-mascot-motion.png" alt="SAINT Guardian" loading="lazy" decoding="async">
-<div class="guardian-message" id="guardianMessage">Welcome... I have been waiting for you.</div>
+<div class="guardian-message guardian-message-v3" id="guardianMessage">Welcome... I have been waiting for you.</div>
 </div>
 </div>
 </section>
 
-<section class="page-section container">
-<div class="sanctuary-result" id="sanctuaryResult">
+<section class="page-section container sanctuary-result-section-v3">
+
+<div class="sanctuary-flow-v3" aria-hidden="true">
+  <div class="sanctuary-flow-step active">
+    <span>1</span>
+    <strong>Connect</strong>
+  </div>
+  <div class="sanctuary-flow-line"></div>
+  <div class="sanctuary-flow-step">
+    <span>2</span>
+    <strong>Sign</strong>
+  </div>
+  <div class="sanctuary-flow-line"></div>
+  <div class="sanctuary-flow-step">
+    <span>3</span>
+    <strong>Verify</strong>
+  </div>
+  <div class="sanctuary-flow-line"></div>
+  <div class="sanctuary-flow-step">
+    <span>4</span>
+    <strong>Enter</strong>
+  </div>
+</div>
+
+<div class="sanctuary-result sanctuary-result-v3" id="sanctuaryResult">
 <p class="eyebrow">Wallet Connection</p><h2 id="resultTitle">Connect your wallet</h2><p id="resultSubtitle">Connect your wallet and sign a free message to verify ownership.</p>
 <div class="sanctuary-cards">
 <article><span>Wallet</span><strong id="resultWallet">Not connected</strong></article>

@@ -1,7 +1,10 @@
-SAINT v7.2.1 — Wallet Connection Fix
+SAINT v7.2.2 — Brand icon improvement
 
-- Added Phantom connect fallback through provider.request().
-- Added visible errors inside the wallet selector.
-- Added console error logging.
-- Added a direct click compatibility handler.
-- No database or Sign Message logic was changed.
+- Replaced the old 32x32 favicon with a 512x512 SAINT icon.
+- Added 192x192, 512x512 and Apple Touch icons.
+- Added site.webmanifest.
+- This improves the image shown by Phantom and browsers.
+
+Important:
+The language shown inside Phantom is controlled by the Phantom app/extension
+and the device/browser language, not by the SAINT website.

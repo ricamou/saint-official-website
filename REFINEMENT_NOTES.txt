@@ -1,0 +1,13 @@
+SAINT Sanctuary — Sprint 3 Visual Refinement
+
+Only the Sanctuary layout was visually refined.
+
+Changes:
+- Removed the large empty gap between the top section and the result card.
+- Brought the result card directly below the wallet/signature area.
+- Improved alignment and hierarchy.
+- Enlarged and repositioned the mascot.
+- Moved the guardian message closer to the mascot.
+- Added a compact 4-step visual flow.
+- Improved desktop, tablet and mobile spacing.
+- No wallet, signature, database or API logic was changed.
