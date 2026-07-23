@@ -89,14 +89,43 @@ module.exports = async function handler(req, res) {
     const balance = Number(holder.saint_balance || 0);
     const minimum = Number(holder.minimum_required || 1000000);
 
+    const balanceEligible = balance >= minimum;
+
+    // If the stored balance meets the rule, synchronize stale access flags.
+    if (
+      holder.ownership_verified &&
+      balanceEligible &&
+      !holder.sanctuary_access
+    ) {
+      const { error: syncError } = await supabase
+        .from("sanctuary_holders")
+        .update({
+          sanctuary_access: true,
+          holder_level: "sanctuary_member"
+        })
+        .eq("wallet", wallet);
+
+      if (syncError) {
+        console.error("Sanctuary access sync failed:", syncError);
+      } else {
+        holder.sanctuary_access = true;
+      }
+    }
+
     if (
       !holder.ownership_verified ||
       !holder.sanctuary_access ||
-      balance < minimum
+      !balanceEligible
     ) {
       return sendJson(res, 403, {
         ok: false,
-        error: "This wallet does not meet the Sanctuary requirement"
+        error: "This wallet does not meet the Sanctuary requirement",
+        details: {
+          ownershipVerified: Boolean(holder.ownership_verified),
+          sanctuaryAccess: Boolean(holder.sanctuary_access),
+          balance,
+          minimum
+        }
       });
     }
 

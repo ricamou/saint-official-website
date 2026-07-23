@@ -135,8 +135,29 @@ module.exports = async function handler(req, res) {
       new Date(cachedHolder.cache_expires_at).getTime() > now.getTime()
     ) {
       const balance = Number(cachedHolder.saint_balance || 0);
+      const eligible = balance >= MINIMUM_BALANCE;
+      const holderLevel = eligible ? "sanctuary_member" : "almost_there";
       const remaining = Math.max(0, MINIMUM_BALANCE - balance);
       const progress = Math.min(100, (balance / MINIMUM_BALANCE) * 100);
+
+      // Self-heal any stale access state left by an earlier authentication.
+      if (
+        cachedHolder.sanctuary_access !== eligible ||
+        cachedHolder.holder_level !== holderLevel
+      ) {
+        const { error: syncError } = await supabase
+          .from("sanctuary_holders")
+          .update({
+            sanctuary_access: eligible,
+            holder_level: holderLevel,
+            ownership_verified: true
+          })
+          .eq("wallet", wallet);
+
+        if (syncError) {
+          console.error("Cached holder access sync failed:", syncError);
+        }
+      }
 
       return sendJson(res, 200, {
         ok: true,
@@ -145,8 +166,8 @@ module.exports = async function handler(req, res) {
         minimumRequired: MINIMUM_BALANCE,
         remaining,
         progress,
-        eligible: balance >= MINIMUM_BALANCE,
-        holderLevel: cachedHolder.holder_level,
+        eligible,
+        holderLevel,
         source: "cache",
         checkedAt: cachedHolder.last_balance_check_at,
         cacheExpiresAt: cachedHolder.cache_expires_at

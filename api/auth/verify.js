@@ -118,17 +118,22 @@ module.exports = async function handler(req, res) {
 
     const { data: existingHolder } = await supabase
       .from("sanctuary_holders")
-      .select("wallet,first_verified_at")
+      .select("wallet,first_verified_at,holder_level,sanctuary_access")
       .eq("wallet", wallet)
       .maybeSingle();
 
     const holderPayload = {
       wallet,
       ownership_verified: true,
-      last_verified_at: verifiedAt.toISOString(),
-      holder_level: "pending",
-      sanctuary_access: false
+      last_verified_at: verifiedAt.toISOString()
     };
+
+    // Preserve balance-derived holder status when the wallet signs again.
+    // Access and holder level are controlled only by the balance engine.
+    if (!existingHolder) {
+      holderPayload.holder_level = "pending";
+      holderPayload.sanctuary_access = false;
+    }
 
     if (!existingHolder?.first_verified_at) {
       holderPayload.first_verified_at = verifiedAt.toISOString();

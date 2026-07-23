@@ -1,0 +1,16 @@
+SAINT v7.4.3.1 — Sanctuary Access Synchronization Fix
+
+Problem corrected:
+- A new Sign Message verification could reset sanctuary_access to false.
+- The UI still showed an eligible cached balance, while the Telegram endpoint denied access.
+
+Fixes:
+- Sign Message no longer resets a holder's balance-derived access.
+- Cached balance checks synchronize sanctuary_access and holder_level.
+- Telegram access endpoint repairs stale access when balance is already sufficient.
+- Added a one-time SQL repair script for existing records.
+
+Run:
+supabase/sanctuary_sprint4_3_1_repair.sql
+
+Then deploy all updated files.
