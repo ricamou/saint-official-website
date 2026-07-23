@@ -109,11 +109,34 @@
 <article><span>Status</span><strong id="resultStatus">Disconnected</strong></article>
 </div>
 <div class="holder-progress"><div><span id="rankCurrent">Connection progress</span><span id="rankNext">Connect wallet to continue</span></div><div class="progress-track"><span id="holderProgressBar"></span></div></div>
+
+<div class="holder-balance-details" id="holderBalanceDetails" hidden>
+  <div class="holder-balance-row">
+    <span>Your Balance</span>
+    <strong id="holderCurrentBalance">0 SAINT</strong>
+  </div>
+  <div class="holder-balance-row">
+    <span>Required</span>
+    <strong>1,000,000 SAINT</strong>
+  </div>
+  <div class="holder-balance-row holder-remaining-row">
+    <span id="holderRemainingLabel">Remaining</span>
+    <strong id="holderRemainingBalance">1,000,000 SAINT</strong>
+  </div>
+  <div class="holder-encouragement" id="holderEncouragement" hidden>
+    <h3>You're Almost There</h3>
+    <p>Buy more $SAINT to unlock access to the Sanctuary.</p>
+  </div>
+  <div class="holder-welcome" id="holderWelcome" hidden>
+    💙 Welcome to the Sanctuary.
+  </div>
+</div>
+
 <div class="sanctuary-actions">
 <a id="enterSanctuaryButton" class="btn primary disabled" href="#">Enter The Sanctuary</a>
 <a id="buySaintButton" class="btn pumpfun" href="https://pump.fun/coin/GUdYAzh14TQcwUSBw79rnFJHZCv64fugTEsq1etDpump" target="_blank">Buy $SAINT</a>
 </div>
-<p class="sanctuary-note">The signature proves wallet ownership. It is free and does not authorize any transaction. Balance verification remains for Sprint 3.</p>
+<p class="sanctuary-note">After ownership verification, the system securely checks the connected wallet for at least 1,000,000 SAINT.</p>
 </div>
 </section>
 </main>

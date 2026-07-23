@@ -245,6 +245,7 @@ async function disconnectWallet() {
   setText("rankCurrent", "Connection progress");
   setText("rankNext", "Connect wallet to continue");
   document.getElementById("holderProgressBar").style.width = "0%";
+  resetHolderBalanceUI();
   setStatus("The Guardian is waiting for you to connect a wallet.");
   setGuardianMessage("Welcome... I have been waiting for you.");
 }
@@ -421,6 +422,8 @@ function renderOwnershipVerified() {
     behavior: "smooth",
     block: "center"
   });
+
+  checkSaintBalance();
 }
 
 function base58Encode(bytes) {
@@ -505,7 +508,141 @@ async function checkExistingSanctuarySession() {
     document.getElementById("holderProgressBar").style.width = "66%";
     setStatus("Secure Sanctuary session restored.", "success");
     setGuardianMessage("Welcome back, Saint. Your secure session is active.");
+    checkSaintBalance();
   } catch (error) {
     console.warn("Session restore warning:", error);
   }
+}
+
+
+async function checkSaintBalance() {
+  if (!walletState.ownershipVerified) {
+    setStatus("Sign the ownership message before checking the balance.", "warning");
+    return;
+  }
+
+  setText("resultBalance", "Checking...");
+  setText("resultRank", "Checking...");
+  setText("resultStatus", "Checking SAINT balance");
+  setText("rankCurrent", "Verifying holder balance");
+  setText("rankNext", "Reading the Solana blockchain");
+  document.getElementById("holderProgressBar").style.width = "72%";
+  setStatus("Checking your SAINT balance...", "scanning");
+  setGuardianMessage("I am checking your SAINT balance on Solana.");
+
+  try {
+    const response = await fetch("/api/sanctuary/balance", {
+      method: "GET",
+      credentials: "same-origin",
+      headers: { "Accept": "application/json" }
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.ok) {
+      throw new Error(data.error || "Unable to check the SAINT balance.");
+    }
+
+    renderHolderBalance(data);
+  } catch (error) {
+    console.error("SAINT balance check failed:", error);
+    setText("resultBalance", "Check failed");
+    setText("resultRank", "Unavailable");
+    setText("resultStatus", "Try again");
+    setText("rankNext", "Balance verification unavailable");
+    setStatus(
+      error?.message || "Unable to check the SAINT balance. Please try again.",
+      "error"
+    );
+    setGuardianMessage("The balance check was interrupted. Please try again.");
+  }
+}
+
+function renderHolderBalance(data) {
+  const balance = Number(data.balance || 0);
+  const minimum = Number(data.minimumRequired || 1000000);
+  const remaining = Math.max(0, Number(data.remaining || 0));
+  const progress = Math.max(0, Math.min(100, Number(data.progress || 0)));
+  const eligible = Boolean(data.eligible);
+
+  const details = document.getElementById("holderBalanceDetails");
+  const encouragement = document.getElementById("holderEncouragement");
+  const welcome = document.getElementById("holderWelcome");
+  const enterButton = document.getElementById("enterSanctuaryButton");
+  const buyButton = document.getElementById("buySaintButton");
+
+  details?.removeAttribute("hidden");
+
+  setText("holderCurrentBalance", `${formatSaint(balance)} SAINT`);
+  setText("holderRemainingBalance", `${formatSaint(remaining)} SAINT`);
+  setText("resultBalance", `${formatSaint(balance)} SAINT`);
+  setText("resultRank", eligible ? "Sanctuary Member" : "Almost There");
+  document.getElementById("holderProgressBar").style.width = `${progress}%`;
+
+  if (eligible) {
+    setText("resultStatus", "Requirement Met");
+    setText("resultTitle", "💙 Welcome to the Sanctuary");
+    setText(
+      "resultSubtitle",
+      "Your wallet is verified and holds the required amount of SAINT."
+    );
+    setText("rankCurrent", `${progress.toFixed(0)}% Complete`);
+    setText("rankNext", "1,000,000 SAINT requirement met");
+    setText("holderRemainingLabel", "Requirement");
+    setText("holderRemainingBalance", `${formatSaint(minimum)} SAINT ✓`);
+
+    encouragement?.setAttribute("hidden", "");
+    welcome?.removeAttribute("hidden");
+
+    enterButton?.classList.remove("disabled");
+    enterButton?.setAttribute("aria-disabled", "false");
+    buyButton?.setAttribute("hidden", "");
+
+    setStatus("Holder requirement verified successfully.", "success");
+    setGuardianMessage("Welcome, Saint. The Sanctuary recognizes you.");
+  } else {
+    setText("resultStatus", "More SAINT Required");
+    setText("resultTitle", "You're Almost There");
+    setText(
+      "resultSubtitle",
+      "Increase your SAINT balance to unlock the Sanctuary."
+    );
+    setText("rankCurrent", `${progress.toFixed(0)}% Complete`);
+    setText("rankNext", `${formatSaint(remaining)} SAINT remaining`);
+    setText("holderRemainingLabel", "Remaining");
+
+    encouragement?.removeAttribute("hidden");
+    welcome?.setAttribute("hidden", "");
+
+    enterButton?.classList.add("disabled");
+    enterButton?.setAttribute("aria-disabled", "true");
+    buyButton?.removeAttribute("hidden");
+
+    setStatus(
+      `Buy ${formatSaint(remaining)} more SAINT to enter the Sanctuary.`,
+      "warning"
+    );
+    setGuardianMessage("You are close. Buy more SAINT to open the gates.");
+  }
+
+  details?.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function resetHolderBalanceUI() {
+  document.getElementById("holderBalanceDetails")?.setAttribute("hidden", "");
+  document.getElementById("holderEncouragement")?.setAttribute("hidden", "");
+  document.getElementById("holderWelcome")?.setAttribute("hidden", "");
+
+  const enterButton = document.getElementById("enterSanctuaryButton");
+  const buyButton = document.getElementById("buySaintButton");
+
+  enterButton?.classList.add("disabled");
+  enterButton?.setAttribute("aria-disabled", "true");
+  buyButton?.removeAttribute("hidden");
+}
+
+function formatSaint(value) {
+  return new Intl.NumberFormat("en-US", {
+    maximumFractionDigits: 2
+  }).format(Number(value || 0));
 }

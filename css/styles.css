@@ -1649,3 +1649,111 @@ body.sanctuary-modal-open {
     0 14px 34px rgba(108,255,154,.14),
     0 0 28px rgba(108,255,154,.12);
 }
+
+
+/* v7.4.2 — Holder Verification Engine */
+.holder-balance-details {
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(255,255,255,.035);
+}
+
+.holder-balance-details[hidden],
+.holder-encouragement[hidden],
+.holder-welcome[hidden],
+#buySaintButton[hidden] {
+  display: none !important;
+}
+
+.holder-balance-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.holder-balance-row span {
+  color: var(--muted);
+}
+
+.holder-balance-row strong {
+  text-align: right;
+  color: var(--text);
+}
+
+.holder-remaining-row {
+  border-bottom: 0;
+}
+
+.holder-encouragement {
+  margin-top: 14px;
+  padding: 17px;
+  border: 1px solid rgba(230,195,106,.34);
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 10% 50%, rgba(230,195,106,.13), transparent 34%),
+    rgba(230,195,106,.055);
+}
+
+.holder-encouragement h3 {
+  margin: 0 0 7px;
+  color: var(--gold-soft);
+  font-size: 22px;
+}
+
+.holder-encouragement p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.holder-welcome {
+  margin-top: 14px;
+  padding: 17px;
+  border: 1px solid rgba(108,255,154,.34);
+  border-radius: 18px;
+  background: rgba(108,255,154,.075);
+  color: var(--gold-soft);
+  font-size: clamp(21px, 3vw, 30px);
+  font-weight: 950;
+  text-align: center;
+  animation: holderWelcomeIn .48s ease both;
+}
+
+@keyframes holderWelcomeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+#enterSanctuaryButton.disabled {
+  pointer-events: none;
+  opacity: .46;
+  filter: saturate(.45);
+}
+
+#enterSanctuaryButton:not(.disabled) {
+  box-shadow:
+    0 16px 42px rgba(230,195,106,.18),
+    0 0 28px rgba(230,195,106,.14);
+}
+
+@media (max-width: 560px) {
+  .holder-balance-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .holder-balance-row strong {
+    text-align: left;
+  }
+}
