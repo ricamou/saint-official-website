@@ -1580,3 +1580,59 @@ body.sanctuary-modal-open {
     width: min(300px, 88vw);
   }
 }
+
+
+/* v7.3.1 — Mobile Phantom handoff */
+.open-phantom-mobile {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  align-items: center;
+  margin-top: 14px;
+  padding: 14px 16px;
+  border: 1px solid rgba(171,159,242,.58);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 12% 50%, rgba(171,159,242,.25), transparent 30%),
+    rgba(171,159,242,.10);
+  color: var(--text);
+  text-decoration: none;
+  box-shadow: 0 16px 38px rgba(0,0,0,.18);
+}
+
+.open-phantom-mobile[hidden] {
+  display: none !important;
+}
+
+.open-phantom-mobile img {
+  width: 48px;
+  height: 48px;
+  border-radius: 15px;
+  box-shadow: 0 0 24px rgba(171,159,242,.25);
+}
+
+.open-phantom-mobile strong,
+.open-phantom-mobile small {
+  display: block;
+}
+
+.open-phantom-mobile strong {
+  font-size: 17px;
+}
+
+.open-phantom-mobile small {
+  margin-top: 4px;
+  color: var(--muted);
+  line-height: 1.35;
+}
+
+.open-phantom-mobile:active {
+  transform: scale(.985);
+}
+
+@media (min-width: 821px) {
+  .open-phantom-mobile {
+    display: none !important;
+  }
+}

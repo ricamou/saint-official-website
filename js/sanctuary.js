@@ -1,3 +1,30 @@
+
+function isMobileDevice() {
+  return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
+    window.matchMedia("(max-width: 820px)").matches;
+}
+
+function buildPhantomBrowseUrl() {
+  const destination = encodeURIComponent(window.location.href);
+  const referrer = encodeURIComponent(window.location.origin);
+  return `https://phantom.app/ul/browse/${destination}?ref=${referrer}`;
+}
+
+function updateMobilePhantomAction() {
+  const action = document.getElementById("openPhantomMobile");
+  if (!action) return;
+
+  const shouldShow =
+    isMobileDevice() &&
+    !getWalletProvider("phantom");
+
+  action.hidden = !shouldShow;
+
+  if (shouldShow) {
+    action.href = buildPhantomBrowseUrl();
+  }
+}
+
 const walletState = {
   provider: null,
   walletName: null,
@@ -23,6 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   updateWalletAvailability();
+  updateMobilePhantomAction();
   setTimeout(updateWalletAvailability, 900);
   setTimeout(updateWalletAvailability, 2200);
 });
@@ -62,6 +90,8 @@ function updateWalletAvailability() {
     if (status) status.textContent = installed ? "Installed" : "Not detected";
     button?.classList.toggle("wallet-installed", installed);
   });
+
+  updateMobilePhantomAction();
 }
 
 function openWalletSelector() {
@@ -89,6 +119,25 @@ async function connectWallet(name) {
   }
 
   if (!provider) {
+    if (name === "phantom" && isMobileDevice()) {
+      const action = document.getElementById("openPhantomMobile");
+      const message =
+        "Phantom cannot connect inside Telegram or this browser. Tap Open in Phantom below.";
+
+      if (action) {
+        action.hidden = false;
+        action.href = buildPhantomBrowseUrl();
+      }
+
+      if (feedback) {
+        feedback.textContent = message;
+        feedback.classList.add("warning");
+      }
+
+      setStatus(message, "warning");
+      return;
+    }
+
     const message =
       "Wallet not detected. Install it or open this site inside the wallet browser.";
 

@@ -1,0 +1,7 @@
+SAINT Sanctuary — Mobile Phantom Fix
+
+- Detects mobile visitors when Phantom is unavailable.
+- Shows an Open in Phantom button.
+- Uses Phantom's official browse universal link.
+- Opens saintfamily.org/sanctuary.html inside Phantom's in-app browser.
+- Desktop extension behavior and Sign Message flow were not changed.
