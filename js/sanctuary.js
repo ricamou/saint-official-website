@@ -1,8 +1,14 @@
-const walletState = { provider: null, walletName: null, publicKey: null };
+const walletState = {
+  provider: null,
+  walletName: null,
+  publicKey: null,
+  ownershipVerified: false
+};
 
 document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("connectWalletButton")?.addEventListener("click", openWalletSelector);
   document.getElementById("disconnectWalletButton")?.addEventListener("click", disconnectWallet);
+  document.getElementById("signMessageButton")?.addEventListener("click", signOwnershipMessage);
 
   document.querySelectorAll("[data-close-wallet-selector]").forEach((el) => {
     el.addEventListener("click", closeWalletSelector);
@@ -116,10 +122,12 @@ async function disconnectWallet() {
   walletState.publicKey = null;
 
   document.getElementById("walletConnectedSummary")?.setAttribute("hidden", "");
+  document.getElementById("signatureCard")?.setAttribute("hidden", "");
+  walletState.ownershipVerified = false;
   document.getElementById("connectWalletButton")?.removeAttribute("hidden");
   setText("resultWallet", "Not connected");
-  setText("resultBalance", "Pending signature");
-  setText("resultRank", "Pending signature");
+  setText("resultBalance", "Not checked yet");
+  setText("resultRank", "Not checked yet");
   setText("resultStatus", "Disconnected");
   setText("resultTitle", "Connect your wallet");
   setText("resultSubtitle", "After connecting, Sprint 2 will add the secure message signature.");
@@ -135,19 +143,25 @@ function renderConnected(publicKey, name) {
 
   document.getElementById("connectWalletButton")?.setAttribute("hidden", "");
   document.getElementById("walletConnectedSummary")?.removeAttribute("hidden");
+  document.getElementById("signatureCard")?.removeAttribute("hidden");
+
+  walletState.ownershipVerified = false;
 
   setText("connectedWalletAddress", abbreviate(publicKey));
   setText("resultWallet", abbreviate(publicKey));
-  setText("resultBalance", "Pending signature");
-  setText("resultRank", "Pending signature");
-  setText("resultStatus", "Connected");
+  setText("resultBalance", "Not checked yet");
+  setText("resultRank", "Not checked yet");
+  setText("resultStatus", "Connected — signature required");
   setText("resultTitle", "Wallet Connected");
-  setText("resultSubtitle", `${walletName} is connected. Sprint 2 will add the secure signature.`);
-  setText("rankCurrent", "Sprint 1 complete");
+  setText(
+    "resultSubtitle",
+    `${walletName} is connected. Sign the free message to prove ownership.`
+  );
+  setText("rankCurrent", "Wallet connected");
   setText("rankNext", "Next: Sign Message");
-  document.getElementById("holderProgressBar").style.width = "33%";
-  setStatus(`${walletName} connected successfully.`, "success");
-  setGuardianMessage("Your wallet is connected. The next gate will be the secure signature.");
+  document.getElementById("holderProgressBar").style.width = "40%";
+  setStatus(`${walletName} connected successfully. Sign the message to continue.`, "success");
+  setGuardianMessage("Your wallet is connected. Now prove that it belongs to you.");
   document.getElementById("sanctuaryResult")?.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
@@ -161,3 +175,178 @@ function setStatus(message, state = "") {
 function setGuardianMessage(message) { setText("guardianMessage", message); }
 function setText(id, value) { const el = document.getElementById(id); if (el) el.textContent = value; }
 function abbreviate(address) { return address.slice(0, 6) + "..." + address.slice(-6); }
+
+
+async function signOwnershipMessage() {
+  const provider = walletState.provider;
+  const publicKey = walletState.publicKey;
+  const signButton = document.getElementById("signMessageButton");
+
+  if (!provider || !publicKey) {
+    setStatus("Connect a wallet before signing.", "warning");
+    return;
+  }
+
+  if (typeof provider.signMessage !== "function") {
+    setStatus(
+      "This wallet does not expose signMessage in the current browser.",
+      "error"
+    );
+    return;
+  }
+
+  signButton.disabled = true;
+  signButton.textContent = "Preparing...";
+  setStatus("Preparing a secure ownership message...", "scanning");
+  setGuardianMessage("I am preparing your one-time verification message.");
+
+  try {
+    const requestResponse = await fetch("/api/auth/request", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ wallet: publicKey })
+    });
+
+    const requestData = await requestResponse.json();
+
+    if (!requestResponse.ok || !requestData.ok) {
+      throw new Error(
+        requestData.error || "Unable to create authentication request."
+      );
+    }
+
+    const encodedMessage = new TextEncoder().encode(requestData.message);
+
+    signButton.textContent = "Waiting for signature...";
+    setStatus("Approve the message signature inside your wallet.", "scanning");
+    setGuardianMessage("Please review and sign the free message in your wallet.");
+
+    const signedResult = await provider.signMessage(encodedMessage, "utf8");
+
+    const signatureBytes =
+      signedResult?.signature ||
+      signedResult;
+
+    if (!signatureBytes) {
+      throw new Error("The wallet did not return a signature.");
+    }
+
+    const signature = base58Encode(signatureBytes);
+
+    signButton.textContent = "Verifying...";
+    setStatus("Verifying your signature securely...", "scanning");
+
+    const verifyResponse = await fetch("/api/auth/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        wallet: publicKey,
+        nonce: requestData.nonce,
+        signature
+      })
+    });
+
+    const verifyData = await verifyResponse.json();
+
+    if (!verifyResponse.ok || !verifyData.ok) {
+      throw new Error(
+        verifyData.error || "Signature verification failed."
+      );
+    }
+
+    renderOwnershipVerified();
+  } catch (error) {
+    console.error("Sign Message failed:", error);
+
+    const cancelled =
+      error?.code === 4001 ||
+      /reject|cancel|declin/i.test(error?.message || "");
+
+    setStatus(
+      cancelled
+        ? "Signature cancelled. No changes were made."
+        : error?.message || "Signature verification failed.",
+      cancelled ? "warning" : "error"
+    );
+
+    setGuardianMessage(
+      cancelled
+        ? "The signature was cancelled. You can try again when ready."
+        : "I could not verify the signature. Please try again."
+    );
+  } finally {
+    if (!walletState.ownershipVerified) {
+      signButton.disabled = false;
+      signButton.textContent = "Sign Message";
+    }
+  }
+}
+
+function renderOwnershipVerified() {
+  walletState.ownershipVerified = true;
+
+  const signButton = document.getElementById("signMessageButton");
+  signButton.disabled = true;
+  signButton.textContent = "Ownership Verified ✓";
+  signButton.classList.add("verified");
+
+  setText("resultStatus", "Ownership Verified");
+  setText("resultTitle", "Wallet Ownership Verified");
+  setText(
+    "resultSubtitle",
+    "Your cryptographic signature is valid. Balance verification is next."
+  );
+  setText("rankCurrent", "Ownership verified");
+  setText("rankNext", "Next: SAINT Balance Check");
+  document.getElementById("holderProgressBar").style.width = "66%";
+
+  setStatus("Wallet ownership verified successfully.", "success");
+  setGuardianMessage("The signature is valid. This wallet truly belongs to you.");
+
+  document.getElementById("sanctuaryResult")?.classList.add("holder-success");
+  document.getElementById("sanctuaryResult")?.scrollIntoView({
+    behavior: "smooth",
+    block: "center"
+  });
+}
+
+function base58Encode(bytes) {
+  const alphabet =
+    "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+
+  const source = bytes instanceof Uint8Array
+    ? bytes
+    : new Uint8Array(bytes);
+
+  if (source.length === 0) return "";
+
+  const digits = [0];
+
+  for (const byte of source) {
+    let carry = byte;
+
+    for (let index = 0; index < digits.length; index += 1) {
+      const value = digits[index] * 256 + carry;
+      digits[index] = value % 58;
+      carry = Math.floor(value / 58);
+    }
+
+    while (carry > 0) {
+      digits.push(carry % 58);
+      carry = Math.floor(carry / 58);
+    }
+  }
+
+  let result = "";
+
+  for (const byte of source) {
+    if (byte === 0) result += alphabet[0];
+    else break;
+  }
+
+  for (let index = digits.length - 1; index >= 0; index -= 1) {
+    result += alphabet[digits[index]];
+  }
+
+  return result;
+}

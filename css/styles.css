@@ -1137,3 +1137,98 @@ body.sanctuary-modal-open {
     font-size: 12px;
   }
 }
+
+
+/* v7.2 Sprint 2 — Sign Message */
+.signature-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 15px;
+  align-items: center;
+  margin-top: 14px;
+  padding: 17px 18px;
+  border: 1px solid rgba(230,195,106,.34);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 12% 50%, rgba(230,195,106,.14), transparent 28%),
+    rgba(255,255,255,.045);
+}
+
+.signature-card[hidden] {
+  display: none !important;
+}
+
+.signature-card-icon {
+  width: 50px;
+  height: 50px;
+  display: grid;
+  place-items: center;
+  border-radius: 17px;
+  background: rgba(230,195,106,.13);
+  font-size: 24px;
+}
+
+.signature-card-copy span,
+.signature-card-copy strong,
+.signature-card-copy small {
+  display: block;
+}
+
+.signature-card-copy span {
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+}
+
+.signature-card-copy strong {
+  margin-top: 5px;
+}
+
+.signature-card-copy small {
+  margin-top: 5px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.signature-button {
+  min-width: 145px;
+  min-height: 48px;
+  border: 0;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--gold), #f1d990);
+  color: var(--graphite);
+  font-weight: 950;
+  cursor: pointer;
+  padding: 0 18px;
+  transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+}
+
+.signature-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px rgba(230,195,106,.18);
+}
+
+.signature-button:disabled {
+  cursor: wait;
+  opacity: .76;
+}
+
+.signature-button.verified {
+  background: linear-gradient(135deg, #6cff9a, #d7ffe3);
+  color: #062015;
+  cursor: default;
+  opacity: 1;
+}
+
+@media (max-width: 760px) {
+  .signature-card {
+    grid-template-columns: auto 1fr;
+  }
+
+  .signature-button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}

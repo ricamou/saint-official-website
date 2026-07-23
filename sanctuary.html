@@ -47,6 +47,18 @@
     <div><span>Wallet connected</span><strong id="connectedWalletAddress">—</strong></div>
     <button id="disconnectWalletButton" type="button">Disconnect</button>
   </div>
+
+  <div class="signature-card" id="signatureCard" hidden>
+    <div class="signature-card-icon">🛡</div>
+    <div class="signature-card-copy">
+      <span>Ownership Verification</span>
+      <strong>Prove that this wallet belongs to you.</strong>
+      <small>No transaction, gas fee, or token approval.</small>
+    </div>
+    <button class="signature-button" id="signMessageButton" type="button">
+      Sign Message
+    </button>
+  </div>
 </div>
 
 <div class="sanctuary-status" id="sanctuaryStatus">
@@ -64,11 +76,11 @@
 
 <section class="page-section container">
 <div class="sanctuary-result" id="sanctuaryResult">
-<p class="eyebrow">Wallet Connection</p><h2 id="resultTitle">Connect your wallet</h2><p id="resultSubtitle">After connecting, Sprint 2 will add the secure message signature.</p>
+<p class="eyebrow">Wallet Connection</p><h2 id="resultTitle">Connect your wallet</h2><p id="resultSubtitle">Connect your wallet and sign a free message to verify ownership.</p>
 <div class="sanctuary-cards">
 <article><span>Wallet</span><strong id="resultWallet">Not connected</strong></article>
-<article><span>SAINT Balance</span><strong id="resultBalance">Pending signature</strong></article>
-<article><span>Holder Level</span><strong id="resultRank">Pending signature</strong></article>
+<article><span>SAINT Balance</span><strong id="resultBalance">Not checked yet</strong></article>
+<article><span>Holder Level</span><strong id="resultRank">Not checked yet</strong></article>
 <article><span>Status</span><strong id="resultStatus">Disconnected</strong></article>
 </div>
 <div class="holder-progress"><div><span id="rankCurrent">Connection progress</span><span id="rankNext">Connect wallet to continue</span></div><div class="progress-track"><span id="holderProgressBar"></span></div></div>
@@ -76,7 +88,7 @@
 <a id="enterSanctuaryButton" class="btn primary disabled" href="#">Enter The Sanctuary</a>
 <a id="buySaintButton" class="btn pumpfun" href="https://pump.fun/coin/GUdYAzh14TQcwUSBw79rnFJHZCv64fugTEsq1etDpump" target="_blank">Buy $SAINT</a>
 </div>
-<p class="sanctuary-note">Sprint 1 only connects the wallet. No signature, balance check, transaction, or token approval is requested yet.</p>
+<p class="sanctuary-note">The signature proves wallet ownership. It is free and does not authorize any transaction. Balance verification remains for Sprint 3.</p>
 </div>
 </section>
 </main>

@@ -1,0 +1,19 @@
+SAINT SANCTUARY — SPRINT 2: SIGN MESSAGE
+
+1. Run:
+   supabase/sanctuary_sprint2.sql
+   in Supabase > SQL Editor.
+
+2. Add these variables in Vercel > Project > Settings > Environment Variables:
+   SUPABASE_URL
+   SUPABASE_SERVICE_ROLE_KEY
+
+3. Upload all files to GitHub and wait for Vercel deployment.
+
+Implemented:
+- One-time nonce valid for 5 minutes.
+- Phantom/Solflare/Backpack signMessage flow.
+- Cryptographic Ed25519 signature verification.
+- Replay protection by marking nonce as used.
+- Verified wallet stored in sanctuary_holders.
+- No balance check and no Telegram release yet.
