@@ -1,5 +1,7 @@
-SAINT v6.2 — Definitive Sanctuary button fix
+SAINT Sanctuary — Sprint 1 Wallet Connection
 
-- Enter The Sanctuary no longer opens t.co or Telegram.
-- Verified holders see the premium Coming Soon modal.
-- The Telegram footer link on the Sanctuary page is disabled until launch.
+- Manual address input removed.
+- Connect Wallet added.
+- Phantom, Solflare and Backpack supported when installed.
+- Disconnect and connected-wallet display added.
+- No signature, balance check, transaction or Telegram access yet.

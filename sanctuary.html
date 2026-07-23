@@ -28,13 +28,25 @@
 <div class="sanctuary-copy reveal">
 <p class="eyebrow">The Holders Sanctuary</p>
 <h1>Welcome, Saint.</h1>
-<p class="sanctuary-lead">Paste a public Solana wallet address. No connection, signature, password, seed phrase, or private key is required.</p>
-<div class="sanctuary-warning"><strong>Public address only.</strong> Never enter a seed phrase or private key.</div>
-<form id="sanctuaryForm">
-<label>Solana wallet address</label>
-<div class="sanctuary-input"><input id="walletAddress" placeholder="Paste your Solana wallet address" autocomplete="off" required><button id="verifyButton">Verify Holder</button></div>
-</form>
-<div class="sanctuary-status" id="sanctuaryStatus"><span></span><p id="statusText">The Guardian is waiting for your wallet address.</p></div>
+<p class="sanctuary-lead">Connect your Solana wallet to begin the holder verification process.</p>
+<div class="sanctuary-warning"><strong>Safe connection.</strong> This step does not request a transaction, payment, seed phrase, or private key.</div>
+
+<div class="wallet-connect-panel" id="walletConnectPanel">
+  <button class="wallet-connect-main" id="connectWalletButton" type="button">
+    <span class="wallet-connect-icon">◎</span>
+    <span><strong>Connect Wallet</strong><small>Phantom, Solflare or Backpack</small></span>
+  </button>
+
+  <div class="wallet-connected-summary" id="walletConnectedSummary" hidden>
+    <div class="wallet-connected-icon">✓</div>
+    <div><span>Wallet connected</span><strong id="connectedWalletAddress">—</strong></div>
+    <button id="disconnectWalletButton" type="button">Disconnect</button>
+  </div>
+</div>
+
+<div class="sanctuary-status" id="sanctuaryStatus">
+  <span></span><p id="statusText">The Guardian is waiting for you to connect a wallet.</p>
+</div>
 </div>
 
 <div class="sanctuary-mascot reveal">
@@ -47,55 +59,39 @@
 
 <section class="page-section container">
 <div class="sanctuary-result" id="sanctuaryResult">
-<p class="eyebrow">Verification Result</p><h2 id="resultTitle">Awaiting verification</h2><p id="resultSubtitle">Your holder status will appear here.</p>
+<p class="eyebrow">Wallet Connection</p><h2 id="resultTitle">Connect your wallet</h2><p id="resultSubtitle">After connecting, Sprint 2 will add the secure message signature.</p>
 <div class="sanctuary-cards">
-<article><span>Wallet</span><strong id="resultWallet">—</strong></article>
-<article><span>SAINT Balance</span><strong id="resultBalance">—</strong></article>
-<article><span>Holder Level</span><strong id="resultRank">—</strong></article>
-<article><span>Status</span><strong id="resultStatus">—</strong></article>
+<article><span>Wallet</span><strong id="resultWallet">Not connected</strong></article>
+<article><span>SAINT Balance</span><strong id="resultBalance">Pending signature</strong></article>
+<article><span>Holder Level</span><strong id="resultRank">Pending signature</strong></article>
+<article><span>Status</span><strong id="resultStatus">Disconnected</strong></article>
 </div>
-<div class="holder-progress"><div><span id="rankCurrent">Holder journey</span><span id="rankNext">Verify to begin</span></div><div class="progress-track"><span id="holderProgressBar"></span></div></div>
+<div class="holder-progress"><div><span id="rankCurrent">Connection progress</span><span id="rankNext">Connect wallet to continue</span></div><div class="progress-track"><span id="holderProgressBar"></span></div></div>
 <div class="sanctuary-actions">
 <a id="enterSanctuaryButton" class="btn primary disabled" href="#">Enter The Sanctuary</a>
 <a id="buySaintButton" class="btn pumpfun" href="https://pump.fun/coin/GUdYAzh14TQcwUSBw79rnFJHZCv64fugTEsq1etDpump" target="_blank">Buy $SAINT</a>
 </div>
-<p class="sanctuary-note">This public-address check confirms only that the entered wallet currently holds $SAINT. It does not prove ownership of the wallet.</p>
+<p class="sanctuary-note">Sprint 1 only connects the wallet. No signature, balance check, transaction, or token approval is requested yet.</p>
 </div>
 </section>
 </main>
 
-<div class="sanctuary-modal" id="sanctuaryComingSoonModal" aria-hidden="true">
-  <div class="sanctuary-modal-backdrop" data-close-sanctuary-modal></div>
 
-  <div class="sanctuary-modal-card" role="dialog" aria-modal="true" aria-labelledby="sanctuaryModalTitle">
-    <button class="sanctuary-modal-close" type="button" aria-label="Close" data-close-sanctuary-modal>✕</button>
-
-    <div class="sanctuary-modal-glow"></div>
-
-    <div class="sanctuary-modal-logo">
-      <img src="assets/logo/saint-logo.jpg" alt="SAINT logo">
+<div class="wallet-selector" id="walletSelector" aria-hidden="true">
+  <div class="wallet-selector-backdrop" data-close-wallet-selector></div>
+  <div class="wallet-selector-card" role="dialog" aria-modal="true" aria-labelledby="walletSelectorTitle">
+    <button class="wallet-selector-close" type="button" aria-label="Close" data-close-wallet-selector>✕</button>
+    <p class="eyebrow">Solana Wallet</p>
+    <h2 id="walletSelectorTitle">Choose your wallet</h2>
+    <p>Select an installed wallet to connect securely.</p>
+    <div class="wallet-options">
+      <button class="wallet-option" type="button" data-wallet="phantom"><span class="wallet-option-logo phantom-logo">P</span><span><strong>Phantom</strong><small id="phantomStatus">Checking installation...</small></span></button>
+      <button class="wallet-option" type="button" data-wallet="solflare"><span class="wallet-option-logo solflare-logo">S</span><span><strong>Solflare</strong><small id="solflareStatus">Checking installation...</small></span></button>
+      <button class="wallet-option" type="button" data-wallet="backpack"><span class="wallet-option-logo backpack-logo">B</span><span><strong>Backpack</strong><small id="backpackStatus">Checking installation...</small></span></button>
     </div>
-
-    <p class="eyebrow">The Holders Sanctuary</p>
-    <h2 id="sanctuaryModalTitle">The Sanctuary is coming soon.</h2>
-
-    <div class="sanctuary-modal-message">
-      <p>We are preparing an exclusive home for the true members of the SAINT Family.</p>
-
-      <p>Holder verification and access to the private Telegram will become available when the time is right.</p>
-
-      <p>Until then, keep building, keep believing, and stay with the Family.</p>
-
-      <strong>Family First. Always. 💙</strong>
-    </div>
-
-    <div class="sanctuary-modal-actions">
-      <button class="btn ghost" type="button" data-close-sanctuary-modal>Close</button>
-      <button class="btn primary sanctuary-coming-soon-button" type="button" disabled>Coming Soon</button>
-    </div>
+    <div class="wallet-selector-help">On mobile, open saintfamily.org inside the browser of your Solana wallet.</div>
   </div>
 </div>
-
 
 <footer class="footer"><div class="footer-brand"><img src="assets/logo/saint-logo.jpg"><div><strong>The SAINT Movement</strong><span>A Crypto Community With a Soul.</span></div></div><div class="footer-links"><a href="#" onclick="return false;" aria-disabled="true">Telegram — Coming Soon</a><a href="https://pump.fun/coin/GUdYAzh14TQcwUSBw79rnFJHZCv64fugTEsq1etDpump" target="_blank">Pump.fun</a></div><p class="disclaimer">© 2026 $SAINT.</p></footer>
 <script>window.SANCTUARY_CONFIG={};</script>

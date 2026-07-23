@@ -1,254 +1,155 @@
-const SC = window.SANCTUARY_CONFIG;
-
-const LEVELS = [
-  { name: "Supporter", min: 1, next: 100000 },
-  { name: "Guardian", min: 100000, next: 500000 },
-  { name: "Saint", min: 500000, next: 2000000 },
-  { name: "Archangel", min: 2000000, next: 10000000 },
-  { name: "Founder", min: 10000000, next: 50000000 },
-  { name: "Whale", min: 50000000, next: 100000000 },
-  { name: "Legend", min: 100000000, next: null }
-];
+const walletState = { provider: null, walletName: null, publicKey: null };
 
 document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("sanctuaryForm");
-  if (!form) return;
+  document.getElementById("connectWalletButton")?.addEventListener("click", openWalletSelector);
+  document.getElementById("disconnectWalletButton")?.addEventListener("click", disconnectWallet);
 
-  form.addEventListener("submit", async (event) => {
-    event.preventDefault();
-
-    const address = document.getElementById("walletAddress").value.trim();
-
-    if (!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(address)) {
-      renderError("Invalid Solana wallet address.");
-      return;
-    }
-
-    await verifyHolder(address);
+  document.querySelectorAll("[data-close-wallet-selector]").forEach((el) => {
+    el.addEventListener("click", closeWalletSelector);
   });
+
+  document.querySelectorAll("[data-wallet]").forEach((button) => {
+    button.addEventListener("click", () => connectWallet(button.dataset.wallet));
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeWalletSelector();
+  });
+
+  updateWalletAvailability();
+  setTimeout(updateWalletAvailability, 900);
+  setTimeout(updateWalletAvailability, 2200);
 });
 
-async function verifyHolder(address) {
-  setScanning(true);
-  setGuardianMessage("Let me verify this wallet on the Solana blockchain...");
+function getWalletProvider(name) {
+  if (name === "phantom") {
+    const provider = window.phantom?.solana || (window.solana?.isPhantom ? window.solana : null);
+    return provider?.isPhantom ? provider : null;
+  }
+
+  if (name === "solflare") {
+    const provider = window.solflare || (window.solana?.isSolflare ? window.solana : null);
+    return provider?.isSolflare ? provider : null;
+  }
+
+  if (name === "backpack") {
+    const provider = window.backpack?.solana || window.backpack || (window.solana?.isBackpack ? window.solana : null);
+    return provider?.connect ? provider : null;
+  }
+
+  return null;
+}
+
+function updateWalletAvailability() {
+  ["phantom", "solflare", "backpack"].forEach((name) => {
+    const installed = Boolean(getWalletProvider(name));
+    const status = document.getElementById(name + "Status");
+    const button = document.querySelector(`[data-wallet="${name}"]`);
+    if (status) status.textContent = installed ? "Installed" : "Not detected";
+    button?.classList.toggle("wallet-installed", installed);
+  });
+}
+
+function openWalletSelector() {
+  updateWalletAvailability();
+  const modal = document.getElementById("walletSelector");
+  modal?.classList.add("open");
+  modal?.setAttribute("aria-hidden", "false");
+  document.body.classList.add("wallet-selector-open");
+}
+
+function closeWalletSelector() {
+  const modal = document.getElementById("walletSelector");
+  modal?.classList.remove("open");
+  modal?.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("wallet-selector-open");
+}
+
+async function connectWallet(name) {
+  const provider = getWalletProvider(name);
+
+  if (!provider) {
+    setStatus("Wallet not detected. Install it or open this site inside the wallet browser.", "warning");
+    return;
+  }
+
+  setStatus("Waiting for wallet approval...", "scanning");
+  setGuardianMessage("Please approve the connection inside your wallet.");
 
   try {
-    const response = await fetch("/api/check-holder", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ wallet: address })
-    });
+    const response = await provider.connect();
+    const publicKey =
+      response?.publicKey?.toString?.() ||
+      provider.publicKey?.toString?.() ||
+      response?.accounts?.[0]?.address;
 
-    const data = await response.json();
+    if (!publicKey) throw new Error("No public key returned");
 
-    if (!response.ok || !data.ok) {
-      throw new Error(data.error || "Holder verification failed.");
-    }
+    walletState.provider = provider;
+    walletState.walletName = name;
+    walletState.publicKey = publicKey;
 
-    renderResult(address, Number(data.balance || 0));
+    renderConnected(publicKey, name);
+    closeWalletSelector();
   } catch (error) {
-    console.error(error);
-    renderError("The Solana network is busy. Please wait a moment and try again.");
-  } finally {
-    setScanning(false);
+    const cancelled = error?.code === 4001 || /reject|cancel|declin/i.test(error?.message || "");
+    setStatus(cancelled ? "Connection cancelled. You can try again." : "Wallet connection failed. Please try again.", "error");
+    setGuardianMessage("The connection was not completed. I will wait for you.");
   }
 }
 
-function renderResult(address, balance) {
-  const holder = balance > 0;
-  const level = getHolderLevel(balance);
-  const result = document.getElementById("sanctuaryResult");
+async function disconnectWallet() {
+  try {
+    await walletState.provider?.disconnect?.();
+  } catch (_) {}
 
-  setText("resultWallet", abbreviateWallet(address));
-  setText("resultBalance", formatToken(balance) + " SAINT");
-  setText("resultRank", holder ? level.name : "Not a holder");
-  setText("resultStatus", holder ? "Verified Holder" : "No SAINT Found");
-  setText("resultTitle", holder ? "Wallet Verified" : "No SAINT Found");
-  setText(
-    "resultSubtitle",
-    holder
-      ? "Welcome to The Holders Sanctuary."
-      : "Become a holder before entering."
-  );
-  setText(
-    "statusText",
-    holder
-      ? "Verification complete. The Sanctuary is open."
-      : "No SAINT balance was found."
-  );
+  walletState.provider = null;
+  walletState.walletName = null;
+  walletState.publicKey = null;
 
-  setGuardianMessage(
-    holder
-      ? "Welcome, Saint. The Sanctuary awaits."
-      : "I could not find SAINT in this wallet yet."
-  );
-
-  result.classList.toggle("holder-success", holder);
-
-  const enter = document.getElementById("enterSanctuaryButton");
-  const buy = document.getElementById("buySaintButton");
-
-  if (holder) {
-    enter.href = "#";
-    enter.removeAttribute("target");
-    enter.removeAttribute("rel");
-    enter.classList.remove("disabled");
-    enter.setAttribute("aria-disabled", "false");
-    enter.onclick = (event) => {
-      event.preventDefault();
-      openSanctuaryComingSoonModal();
-    };
-    buy.style.display = "none";
-  } else {
-    enter.href = "#";
-    enter.removeAttribute("target");
-    enter.classList.add("disabled");
-    enter.setAttribute("aria-disabled", "true");
-    buy.style.display = "inline-flex";
-  }
-
-  renderProgress(balance, level);
-  result.scrollIntoView({ behavior: "smooth", block: "center" });
+  document.getElementById("walletConnectedSummary")?.setAttribute("hidden", "");
+  document.getElementById("connectWalletButton")?.removeAttribute("hidden");
+  setText("resultWallet", "Not connected");
+  setText("resultBalance", "Pending signature");
+  setText("resultRank", "Pending signature");
+  setText("resultStatus", "Disconnected");
+  setText("resultTitle", "Connect your wallet");
+  setText("resultSubtitle", "After connecting, Sprint 2 will add the secure message signature.");
+  setText("rankCurrent", "Connection progress");
+  setText("rankNext", "Connect wallet to continue");
+  document.getElementById("holderProgressBar").style.width = "0%";
+  setStatus("The Guardian is waiting for you to connect a wallet.");
+  setGuardianMessage("Welcome... I have been waiting for you.");
 }
 
-function renderError(message) {
-  setScanning(false);
+function renderConnected(publicKey, name) {
+  const walletName = name.charAt(0).toUpperCase() + name.slice(1);
+
+  document.getElementById("connectWalletButton")?.setAttribute("hidden", "");
+  document.getElementById("walletConnectedSummary")?.removeAttribute("hidden");
+
+  setText("connectedWalletAddress", abbreviate(publicKey));
+  setText("resultWallet", abbreviate(publicKey));
+  setText("resultBalance", "Pending signature");
+  setText("resultRank", "Pending signature");
+  setText("resultStatus", "Connected");
+  setText("resultTitle", "Wallet Connected");
+  setText("resultSubtitle", `${walletName} is connected. Sprint 2 will add the secure signature.`);
+  setText("rankCurrent", "Sprint 1 complete");
+  setText("rankNext", "Next: Sign Message");
+  document.getElementById("holderProgressBar").style.width = "33%";
+  setStatus(`${walletName} connected successfully.`, "success");
+  setGuardianMessage("Your wallet is connected. The next gate will be the secure signature.");
+  document.getElementById("sanctuaryResult")?.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+function setStatus(message, state = "") {
+  const box = document.getElementById("sanctuaryStatus");
+  box?.classList.remove("scanning", "success", "warning", "error");
+  if (state) box?.classList.add(state);
   setText("statusText", message);
-  setText("resultTitle", "Verification Error");
-  setText("resultSubtitle", message);
-  setText("resultStatus", "Try Again");
-  setGuardianMessage("Something interrupted the verification. Please try again.");
 }
 
-function setScanning(active) {
-  const button = document.getElementById("verifyButton");
-  const status = document.getElementById("sanctuaryStatus");
-
-  if (!button || !status) return;
-
-  button.disabled = active;
-  button.textContent = active ? "Scanning..." : "Verify Holder";
-  status.classList.toggle("scanning", active);
-
-  if (active) {
-    setText("statusText", "Scanning the Solana blockchain...");
-  }
-}
-
-function getHolderLevel(balance) {
-  if (balance <= 0) {
-    return { name: "Not a holder", min: 0, next: 1 };
-  }
-
-  return [...LEVELS].reverse().find((level) => balance >= level.min) || LEVELS[0];
-}
-
-function renderProgress(balance, level) {
-  const bar = document.getElementById("holderProgressBar");
-
-  if (balance <= 0) {
-    bar.style.width = "0%";
-    setText("rankCurrent", "No holder level");
-    setText("rankNext", "Hold at least 1 SAINT");
-    return;
-  }
-
-  if (!level.next) {
-    bar.style.width = "100%";
-    setText("rankCurrent", level.name);
-    setText("rankNext", "Highest level reached");
-    return;
-  }
-
-  const percentage = Math.max(
-    0,
-    Math.min(100, ((balance - level.min) / (level.next - level.min)) * 100)
-  );
-
-  bar.style.width = percentage + "%";
-  setText("rankCurrent", level.name);
-  setText(
-    "rankNext",
-    formatToken(Math.max(0, level.next - balance)) + " SAINT to next level"
-  );
-}
-
-function setGuardianMessage(message) {
-  setText("guardianMessage", message);
-}
-
-function setText(id, value) {
-  const element = document.getElementById(id);
-  if (element) element.textContent = value;
-}
-
-function abbreviateWallet(address) {
-  return address.slice(0, 6) + "..." + address.slice(-6);
-}
-
-function formatToken(value) {
-  return new Intl.NumberFormat("en-US", {
-    maximumFractionDigits: 2
-  }).format(Number(value || 0));
-}
-
-
-window.addEventListener("online", () => {
-  const status = document.getElementById("statusText");
-  if (status && status.textContent.includes("network")) {
-    status.textContent = "Connection restored. You can verify the wallet again.";
-  }
-});
-
-window.addEventListener("offline", () => {
-  const status = document.getElementById("statusText");
-  if (status) status.textContent = "You appear to be offline. Reconnect and try again.";
-});
-
-
-function openSanctuaryComingSoonModal() {
-  const modal = document.getElementById("sanctuaryComingSoonModal");
-  if (!modal) return;
-
-  modal.classList.add("open");
-  modal.setAttribute("aria-hidden", "false");
-  document.body.classList.add("sanctuary-modal-open");
-}
-
-function closeSanctuaryComingSoonModal() {
-  const modal = document.getElementById("sanctuaryComingSoonModal");
-  if (!modal) return;
-
-  modal.classList.remove("open");
-  modal.setAttribute("aria-hidden", "true");
-  document.body.classList.remove("sanctuary-modal-open");
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll("[data-close-sanctuary-modal]").forEach((element) => {
-    element.addEventListener("click", closeSanctuaryComingSoonModal);
-  });
-});
-
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") {
-    closeSanctuaryComingSoonModal();
-  }
-});
-
-
-document.addEventListener("DOMContentLoaded", () => {
-  const enterButton = document.getElementById("enterSanctuaryButton");
-
-  if (enterButton) {
-    enterButton.addEventListener("click", (event) => {
-      if (!enterButton.classList.contains("disabled")) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        openSanctuaryComingSoonModal();
-      }
-    }, true);
-  }
-});
+function setGuardianMessage(message) { setText("guardianMessage", message); }
+function setText(id, value) { const el = document.getElementById(id); if (el) el.textContent = value; }
+function abbreviate(address) { return address.slice(0, 6) + "..." + address.slice(-6); }
