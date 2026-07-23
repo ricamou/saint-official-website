@@ -1232,3 +1232,44 @@ body.sanctuary-modal-open {
     width: 100%;
   }
 }
+
+
+/* v7.2.1 Wallet connection feedback */
+.wallet-selector-feedback {
+  min-height: 0;
+  margin-top: 14px;
+  padding: 0;
+  border-radius: 14px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.wallet-selector-feedback:not(:empty) {
+  min-height: 44px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,.045);
+}
+
+.wallet-selector-feedback.loading {
+  color: var(--gold);
+  border-color: rgba(230,195,106,.30);
+}
+
+.wallet-selector-feedback.warning {
+  color: #f1d990;
+  border-color: rgba(230,195,106,.34);
+}
+
+.wallet-selector-feedback.error {
+  color: #ffb0b0;
+  border-color: rgba(255,110,110,.36);
+  background: rgba(255,110,110,.07);
+}
+
+.wallet-option {
+  position: relative;
+  z-index: 3;
+  pointer-events: auto;
+}

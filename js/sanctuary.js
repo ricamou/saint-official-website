@@ -81,34 +81,86 @@ function closeWalletSelector() {
 
 async function connectWallet(name) {
   const provider = getWalletProvider(name);
+  const feedback = document.getElementById("walletSelectorFeedback");
+
+  if (feedback) {
+    feedback.textContent = "";
+    feedback.className = "wallet-selector-feedback";
+  }
 
   if (!provider) {
-    setStatus("Wallet not detected. Install it or open this site inside the wallet browser.", "warning");
+    const message =
+      "Wallet not detected. Install it or open this site inside the wallet browser.";
+
+    if (feedback) {
+      feedback.textContent = message;
+      feedback.classList.add("error");
+    }
+
+    setStatus(message, "warning");
     return;
+  }
+
+  if (feedback) {
+    feedback.textContent = "Opening wallet approval...";
+    feedback.classList.add("loading");
   }
 
   setStatus("Waiting for wallet approval...", "scanning");
   setGuardianMessage("Please approve the connection inside your wallet.");
 
   try {
-    const response = await provider.connect();
+    let response;
+
+    // Phantom and most injected Solana wallets.
+    if (typeof provider.connect === "function") {
+      response = await provider.connect({ onlyIfTrusted: false });
+    } else if (typeof provider.request === "function") {
+      response = await provider.request({ method: "connect" });
+    } else {
+      throw new Error("This wallet provider does not expose a connect method.");
+    }
+
     const publicKey =
       response?.publicKey?.toString?.() ||
       provider.publicKey?.toString?.() ||
-      response?.accounts?.[0]?.address;
+      response?.accounts?.[0]?.address ||
+      response?.publicKey ||
+      null;
 
-    if (!publicKey) throw new Error("No public key returned");
+    if (!publicKey) {
+      throw new Error("The wallet connected but did not return a public key.");
+    }
 
     walletState.provider = provider;
     walletState.walletName = name;
-    walletState.publicKey = publicKey;
+    walletState.publicKey = String(publicKey);
 
-    renderConnected(publicKey, name);
+    renderConnected(String(publicKey), name);
     closeWalletSelector();
   } catch (error) {
-    const cancelled = error?.code === 4001 || /reject|cancel|declin/i.test(error?.message || "");
-    setStatus(cancelled ? "Connection cancelled. You can try again." : "Wallet connection failed. Please try again.", "error");
-    setGuardianMessage("The connection was not completed. I will wait for you.");
+    console.error("Wallet connection failed:", error);
+
+    const cancelled =
+      error?.code === 4001 ||
+      /reject|cancel|declin/i.test(error?.message || "");
+
+    const message = cancelled
+      ? "Connection cancelled. You can try again."
+      : `Wallet connection failed: ${error?.message || "Unknown error"}`;
+
+    if (feedback) {
+      feedback.textContent = message;
+      feedback.classList.remove("loading");
+      feedback.classList.add(cancelled ? "warning" : "error");
+    }
+
+    setStatus(message, cancelled ? "warning" : "error");
+    setGuardianMessage(
+      cancelled
+        ? "The connection was cancelled. I will wait for you."
+        : "The wallet could not be connected. Please try again."
+    );
   }
 }
 
@@ -350,3 +402,14 @@ function base58Encode(bytes) {
 
   return result;
 }
+
+
+// wallet-option-pointer-fix
+document.addEventListener("click", (event) => {
+  const option = event.target.closest("[data-wallet]");
+  if (!option) return;
+
+  event.preventDefault();
+  event.stopPropagation();
+  connectWallet(option.dataset.wallet);
+}, true);

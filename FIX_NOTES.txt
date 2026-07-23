@@ -1,0 +1,7 @@
+SAINT v7.2.1 — Wallet Connection Fix
+
+- Added Phantom connect fallback through provider.request().
+- Added visible errors inside the wallet selector.
+- Added console error logging.
+- Added a direct click compatibility handler.
+- No database or Sign Message logic was changed.
