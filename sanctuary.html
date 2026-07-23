@@ -32,9 +32,14 @@
 <div class="sanctuary-warning"><strong>Safe connection.</strong> This step does not request a transaction, payment, seed phrase, or private key.</div>
 
 <div class="wallet-connect-panel" id="walletConnectPanel">
-  <button class="wallet-connect-main" id="connectWalletButton" type="button">
-    <span class="wallet-connect-icon">◎</span>
-    <span><strong>Connect Wallet</strong><small>Phantom, Solflare or Backpack</small></span>
+  <button class="wallet-connect-main phantom-connect-main" id="connectWalletButton" type="button">
+    <span class="wallet-connect-icon phantom-connect-icon">
+      <img src="assets/wallets/phantom-wallet.svg" alt="Phantom Wallet logo">
+    </span>
+    <span class="wallet-connect-copy">
+      <strong id="connectWalletLabel">Connect Wallet</strong>
+      <small>Supports Phantom • Solflare • Backpack</small>
+    </span>
   </button>
 
   <div class="wallet-connected-summary" id="walletConnectedSummary" hidden>

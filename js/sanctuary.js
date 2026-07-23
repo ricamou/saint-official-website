@@ -41,10 +41,18 @@ function getWalletProvider(name) {
 }
 
 function updateWalletAvailability() {
+  const phantomInstalled = Boolean(getWalletProvider("phantom"));
+  const mainLabel = document.getElementById("connectWalletLabel");
+
+  if (mainLabel) {
+    mainLabel.textContent = phantomInstalled ? "Connect Phantom" : "Connect Wallet";
+  }
+
   ["phantom", "solflare", "backpack"].forEach((name) => {
     const installed = Boolean(getWalletProvider(name));
     const status = document.getElementById(name + "Status");
     const button = document.querySelector(`[data-wallet="${name}"]`);
+
     if (status) status.textContent = installed ? "Installed" : "Not detected";
     button?.classList.toggle("wallet-installed", installed);
   });

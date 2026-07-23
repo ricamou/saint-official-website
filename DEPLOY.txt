@@ -1,7 +1,7 @@
-SAINT Sanctuary — Sprint 1 Wallet Connection
+SAINT Sanctuary — Sprint 1.1
 
-- Manual address input removed.
-- Connect Wallet added.
-- Phantom, Solflare and Backpack supported when installed.
-- Disconnect and connected-wallet display added.
-- No signature, balance check, transaction or Telegram access yet.
+Changes:
+- Added Phantom wallet image to the main Connect Wallet button.
+- Main button automatically changes to Connect Phantom when Phantom is detected.
+- Wallet selector still supports Phantom, Solflare and Backpack.
+- No signature, balance check or Telegram access yet.
