@@ -1906,3 +1906,25 @@ html[data-theme=light] .treasury-address-block { background: rgba(20,32,51,.04);
 .treasury-manifesto blockquote span,
 .treasury-manifesto blockquote strong { display: block; line-height: 1.65; }
 .treasury-manifesto blockquote strong:last-child { color: var(--gold-soft); margin-top: 4px; }
+
+/* Sanctuary 1M cinematic verification effect — visual only */
+.saint-boom-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;overflow:hidden;background:rgba(2,3,8,.94);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .22s ease,visibility .22s ease}
+.saint-boom-overlay.active{opacity:1;visibility:visible}
+.saint-boom-overlay.fade-out{opacity:0}
+.saint-boom-content{position:relative;z-index:3;text-align:center;transform:scale(.45);opacity:0;filter:blur(12px)}
+.saint-boom-overlay.active .saint-boom-content{animation:saintBoomReveal 2.8s cubic-bezier(.16,1,.3,1) forwards}
+.saint-boom-word{font-size:clamp(3rem,10vw,8rem);font-weight:1000;letter-spacing:.16em;color:#fff;text-shadow:0 0 18px #fff,0 0 50px #f7c85f,0 0 100px #d69a24}
+.saint-boom-million{margin-top:.15em;font-size:clamp(3.6rem,12vw,10rem);line-height:.9;font-weight:1000;letter-spacing:-.04em;background:linear-gradient(180deg,#fff7c9 0%,#f6d36b 45%,#b87412 100%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 8px 50px rgba(244,196,75,.34)}
+.saint-boom-token{margin-top:1rem;font-size:clamp(1rem,3vw,2rem);font-weight:900;letter-spacing:.28em;color:#ffe8a2;text-transform:uppercase}
+.saint-boom-message{margin-top:1.25rem;font-size:clamp(1rem,2vw,1.35rem);color:rgba(255,255,255,.86);letter-spacing:.08em}
+.saint-boom-flash{position:absolute;inset:-30%;z-index:1;background:radial-gradient(circle,rgba(255,244,190,1) 0%,rgba(246,199,86,.9) 8%,rgba(217,142,22,.28) 28%,transparent 62%);transform:scale(.05);opacity:0}
+.saint-boom-overlay.active .saint-boom-flash{animation:saintFlash 1.35s ease-out forwards}
+.saint-boom-particles{position:absolute;inset:0;z-index:2}
+.saint-boom-particle{position:absolute;left:50%;top:50%;width:var(--size);height:var(--size);border-radius:50%;background:radial-gradient(circle,#fff 0%,#ffd86b 45%,rgba(255,184,46,0) 72%);box-shadow:0 0 14px #ffc64f;transform:translate(-50%,-50%);opacity:0}
+.saint-boom-overlay.active .saint-boom-particle{animation:saintParticle var(--duration) cubic-bezier(.1,.7,.2,1) var(--delay) forwards}
+body.saint-boom-shake{animation:saintScreenShake .46s linear}
+@keyframes saintFlash{0%{opacity:0;transform:scale(.05)}12%{opacity:1}45%{opacity:.82;transform:scale(1)}100%{opacity:0;transform:scale(1.5)}}
+@keyframes saintBoomReveal{0%{transform:scale(.45);opacity:0;filter:blur(12px)}18%{transform:scale(1.16);opacity:1;filter:blur(0)}35%{transform:scale(.98);opacity:1}78%{transform:scale(1);opacity:1}100%{transform:scale(1.04);opacity:0;filter:blur(4px)}}
+@keyframes saintParticle{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}12%{opacity:1}75%{opacity:.9}100%{opacity:0;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(1.25)}}
+@keyframes saintScreenShake{0%,100%{transform:translate(0)}15%{transform:translate(-5px,3px)}30%{transform:translate(5px,-3px)}45%{transform:translate(-3px,-2px)}60%{transform:translate(3px,2px)}75%{transform:translate(-1px,1px)}}
+@media (prefers-reduced-motion:reduce){.saint-boom-overlay.active .saint-boom-content,.saint-boom-overlay.active .saint-boom-flash,.saint-boom-overlay.active .saint-boom-particle,body.saint-boom-shake{animation-duration:.01ms!important;animation-delay:0ms!important}}

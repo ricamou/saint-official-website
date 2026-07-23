@@ -620,6 +620,7 @@ function renderHolderBalance(data) {
 
     setStatus("Holder requirement verified successfully.", "success");
     setGuardianMessage("Welcome, Saint. The Sanctuary recognizes you.");
+    playSaintMillionBoom();
   } else {
     setText("resultStatus", "More SAINT Required");
     setText("resultTitle", "You're Almost There");
@@ -729,4 +730,42 @@ async function enterTheSanctuary(event) {
       "The gates could not be opened. Please try again."
     );
   }
+}
+
+
+// Visual celebration only. It does not change wallet connection, signature, balance, or access logic.
+function playSaintMillionBoom() {
+  const overlay = document.getElementById("saintBoomOverlay");
+  const particles = document.getElementById("saintBoomParticles");
+  if (!overlay || !particles || overlay.classList.contains("active")) return;
+
+  particles.innerHTML = "";
+  const count = window.matchMedia("(max-width: 700px)").matches ? 42 : 72;
+
+  for (let index = 0; index < count; index += 1) {
+    const particle = document.createElement("span");
+    particle.className = "saint-boom-particle";
+    const angle = Math.random() * Math.PI * 2;
+    const distance = 130 + Math.random() * Math.min(window.innerWidth, window.innerHeight) * 0.58;
+    particle.style.setProperty("--x", `${Math.cos(angle) * distance}px`);
+    particle.style.setProperty("--y", `${Math.sin(angle) * distance}px`);
+    particle.style.setProperty("--size", `${3 + Math.random() * 8}px`);
+    particle.style.setProperty("--duration", `${1.2 + Math.random() * 1.2}s`);
+    particle.style.setProperty("--delay", `${Math.random() * 0.22}s`);
+    particles.appendChild(particle);
+  }
+
+  overlay.setAttribute("aria-hidden", "false");
+  overlay.classList.remove("fade-out");
+  void overlay.offsetWidth;
+  overlay.classList.add("active");
+  document.body.classList.add("saint-boom-shake");
+
+  window.setTimeout(() => document.body.classList.remove("saint-boom-shake"), 520);
+  window.setTimeout(() => overlay.classList.add("fade-out"), 2550);
+  window.setTimeout(() => {
+    overlay.classList.remove("active", "fade-out");
+    overlay.setAttribute("aria-hidden", "true");
+    particles.innerHTML = "";
+  }, 2900);
 }
