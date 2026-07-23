@@ -29,6 +29,7 @@ const walletState = {
   provider: null,
   walletName: null,
   publicKey: null,
+  sessionWallet: null,
   ownershipVerified: false
 };
 
@@ -56,8 +57,15 @@ document.addEventListener("DOMContentLoaded", () => {
   updateWalletAvailability();
   checkExistingSanctuarySession();
   updateMobilePhantomAction();
-  setTimeout(updateWalletAvailability, 900);
-  setTimeout(updateWalletAvailability, 2200);
+  setTimeout(() => {
+    updateWalletAvailability();
+    tryTrustedWalletReconnect();
+  }, 900);
+
+  setTimeout(() => {
+    updateWalletAvailability();
+    tryTrustedWalletReconnect();
+  }, 2200);
 });
 
 function getWalletProvider(name) {
@@ -192,6 +200,7 @@ async function connectWallet(name) {
 
     renderConnected(String(publicKey), name);
     closeWalletSelector();
+    await reconcileConnectedWalletSession();
   } catch (error) {
     console.error("Wallet connection failed:", error);
 
@@ -235,6 +244,7 @@ async function disconnectWallet() {
   walletState.provider = null;
   walletState.walletName = null;
   walletState.publicKey = null;
+  walletState.sessionWallet = null;
 
   document.getElementById("walletConnectedSummary")?.setAttribute("hidden", "");
   document.getElementById("signatureCard")?.setAttribute("hidden", "");
@@ -417,6 +427,7 @@ async function signOwnershipMessage() {
 }
 
 function renderOwnershipVerified() {
+  walletState.sessionWallet = walletState.publicKey;
   walletState.ownershipVerified = true;
 
   const signButton = document.getElementById("signMessageButton");
@@ -507,37 +518,157 @@ async function checkExistingSanctuarySession() {
       headers: { "Accept": "application/json" }
     });
 
-    if (!response.ok) return;
+    if (!response.ok) {
+      walletState.sessionWallet = null;
+      return;
+    }
 
-    const data = await response.json();
+    const data = await readApiResponse(response);
 
-    if (!data.ok || !data.authenticated || !data.wallet) return;
+    if (!data.ok || !data.authenticated || !data.wallet) {
+      walletState.sessionWallet = null;
+      return;
+    }
 
-    walletState.publicKey = data.wallet;
-    walletState.ownershipVerified = true;
+    // Keep the secure backend session available, but do not display
+    // holder data until that same wallet is actively connected.
+    walletState.sessionWallet = data.wallet;
 
-    setText("resultWallet", abbreviate(data.wallet));
-    setText("resultStatus", "Ownership Verified");
-    setText("resultTitle", "💙 Welcome to the Sanctuary");
-    setText(
-      "resultSubtitle",
-      "Your secure authentication session is active. Connect the same wallet to continue."
-    );
-    setText("rankCurrent", "Ownership verified");
-    setText("rankNext", "Next: SAINT Balance Check");
-    document.getElementById("holderProgressBar").style.width = "66%";
-    setStatus("Secure Sanctuary session restored.", "success");
-    setGuardianMessage("Welcome back, Saint. Your secure session is active.");
-    checkSaintBalance();
+    if (
+      walletState.publicKey &&
+      walletState.publicKey === walletState.sessionWallet
+    ) {
+      restoreVerifiedConnectedState();
+    }
   } catch (error) {
+    walletState.sessionWallet = null;
     console.warn("Session restore warning:", error);
+  }
+}
+
+async function reconcileConnectedWalletSession() {
+  await checkExistingSanctuarySession();
+
+  if (
+    walletState.publicKey &&
+    walletState.sessionWallet &&
+    walletState.publicKey === walletState.sessionWallet
+  ) {
+    restoreVerifiedConnectedState();
+    return;
+  }
+
+  // A session belonging to another wallet must never unlock this connection.
+  if (
+    walletState.sessionWallet &&
+    walletState.publicKey &&
+    walletState.sessionWallet !== walletState.publicKey
+  ) {
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "same-origin"
+      });
+    } catch (error) {
+      console.warn("Mismatched session logout warning:", error);
+    }
+
+    walletState.sessionWallet = null;
+  }
+
+  walletState.ownershipVerified = false;
+}
+
+function restoreVerifiedConnectedState() {
+  if (
+    !walletState.publicKey ||
+    !walletState.sessionWallet ||
+    walletState.publicKey !== walletState.sessionWallet
+  ) {
+    return;
+  }
+
+  walletState.ownershipVerified = true;
+
+  const signButton = document.getElementById("signMessageButton");
+  if (signButton) {
+    signButton.disabled = true;
+    signButton.textContent = "Ownership Verified ✓";
+    signButton.classList.add("verified");
+  }
+
+  setText("resultWallet", abbreviate(walletState.publicKey));
+  setText("resultStatus", "Ownership Verified");
+  setText("resultTitle", "Wallet Ownership Verified");
+  setText(
+    "resultSubtitle",
+    "💙 Welcome to the Sanctuary. Your connected wallet matches the secure session."
+  );
+  setText("rankCurrent", "Ownership verified");
+  setText("rankNext", "Checking SAINT balance");
+  document.getElementById("holderProgressBar").style.width = "66%";
+
+  setStatus("Connected wallet ownership verified.", "success");
+  setGuardianMessage("Welcome back, Saint. Your connected wallet is verified.");
+
+  checkSaintBalance();
+}
+
+async function tryTrustedWalletReconnect() {
+  // Do not interrupt a wallet that is already connected.
+  if (walletState.publicKey) return;
+
+  const candidates = [
+    ["phantom", getWalletProvider("phantom")],
+    ["solflare", getWalletProvider("solflare")],
+    ["backpack", getWalletProvider("backpack")]
+  ];
+
+  for (const [name, provider] of candidates) {
+    if (!provider || typeof provider.connect !== "function") continue;
+
+    try {
+      const response = await provider.connect({ onlyIfTrusted: true });
+      const publicKey =
+        response?.publicKey?.toString?.() ||
+        provider.publicKey?.toString?.() ||
+        response?.accounts?.[0]?.address ||
+        null;
+
+      if (!publicKey) continue;
+
+      walletState.provider = provider;
+      walletState.walletName = name;
+      walletState.publicKey = String(publicKey);
+
+      renderConnected(String(publicKey), name);
+      await reconcileConnectedWalletSession();
+      return;
+    } catch (error) {
+      // A wallet that was not previously trusted should fail silently.
+    }
   }
 }
 
 
 async function checkSaintBalance() {
-  if (!walletState.ownershipVerified) {
-    setStatus("Sign the ownership message before checking the balance.", "warning");
+  if (
+    !walletState.provider ||
+    !walletState.publicKey ||
+    !walletState.sessionWallet ||
+    walletState.publicKey !== walletState.sessionWallet ||
+    !walletState.ownershipVerified
+  ) {
+    resetHolderBalanceUI();
+    setText("resultBalance", "Not checked yet");
+    setText("resultRank", "Not checked yet");
+    setText("resultStatus", walletState.publicKey ? "Signature required" : "Wallet disconnected");
+    setStatus(
+      walletState.publicKey
+        ? "Sign the ownership message before checking the balance."
+        : "Connect your wallet to view holder status.",
+      "warning"
+    );
     return;
   }
 
@@ -673,9 +804,18 @@ async function enterTheSanctuary(event) {
 
   const button = document.getElementById("enterSanctuaryButton");
 
-  if (!button || button.classList.contains("disabled")) {
+  if (
+    !button ||
+    button.classList.contains("disabled") ||
+    !walletState.provider ||
+    !walletState.publicKey ||
+    !walletState.sessionWallet ||
+    walletState.publicKey !== walletState.sessionWallet ||
+    !walletState.ownershipVerified
+  ) {
+    resetHolderBalanceUI();
     setStatus(
-      "You need at least 1,000,000 SAINT to enter the Sanctuary.",
+      "Connect and verify the same wallet before entering the Sanctuary.",
       "warning"
     );
     return;

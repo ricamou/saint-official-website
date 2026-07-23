@@ -1,0 +1,13 @@
+SAINT v7.4.3.2 — Connected Wallet Required
+
+Corrected:
+- A valid old backend session no longer displays token balance by itself.
+- Holder balance is shown only when a wallet is actively connected.
+- The connected public key must match the authenticated session wallet.
+- A different connected wallet invalidates the old session.
+- Phantom/Solflare/Backpack can silently restore a previously trusted connection.
+- Disconnect clears the holder result immediately.
+- Enter The Sanctuary also requires the same active, verified wallet.
+
+No database migration is required.
+Deploy all files to GitHub/Vercel.
