@@ -70,7 +70,8 @@ module.exports = async function handler(req, res) {
       console.error("Nonce insert failed:", error);
       return sendJson(res, 500, {
         ok: false,
-        error: "Unable to create authentication request"
+        error: error.message || "Unable to create authentication request",
+        details: error
       });
     }
 
@@ -85,7 +86,8 @@ module.exports = async function handler(req, res) {
     console.error("Auth request error:", error);
     return sendJson(res, 500, {
       ok: false,
-      error: "Authentication service is not configured"
+      error: error?.message || "Authentication service is not configured",
+      stack: error?.stack || null
     });
   }
 };
