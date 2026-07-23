@@ -1,0 +1,28 @@
+SAINT SANCTUARY — SPRINT 4.1
+SIGN MESSAGE + BACKEND AUTHENTICATION
+
+1. Run in Supabase SQL Editor:
+   supabase/sanctuary_sprint4_1.sql
+
+2. Confirm these Vercel variables already exist:
+   SUPABASE_URL
+   SUPABASE_SERVICE_ROLE_KEY
+
+3. Upload all files to GitHub and wait for Vercel deployment.
+
+Implemented:
+- One-time nonce with 5-minute expiration.
+- Cryptographic Ed25519 Sign Message verification.
+- Replay protection.
+- Verified wallet saved in sanctuary_holders.
+- Secure opaque session stored in sanctuary_auth_sessions.
+- HttpOnly + SameSite=Lax session cookie.
+- Session check endpoint.
+- Logout/revoke endpoint.
+- Approved success text:
+  💙 Welcome to the Sanctuary.
+
+Not included yet:
+- SAINT balance check.
+- 1,000,000 SAINT threshold.
+- Telegram invite release.

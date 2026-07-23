@@ -1636,3 +1636,16 @@ body.sanctuary-modal-open {
     display: none !important;
   }
 }
+
+
+/* v7.4.1 — Sprint 4.1 authentication success */
+.sanctuary-result.holder-success #resultTitle {
+  color: var(--gold-soft);
+  text-shadow: 0 0 26px rgba(230,195,106,.18);
+}
+
+.signature-button.verified {
+  box-shadow:
+    0 14px 34px rgba(108,255,154,.14),
+    0 0 28px rgba(108,255,154,.12);
+}

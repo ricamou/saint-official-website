@@ -50,6 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   updateWalletAvailability();
+  checkExistingSanctuarySession();
   updateMobilePhantomAction();
   setTimeout(updateWalletAvailability, 900);
   setTimeout(updateWalletAvailability, 2200);
@@ -218,6 +219,15 @@ async function disconnectWallet() {
     await walletState.provider?.disconnect?.();
   } catch (_) {}
 
+  try {
+    await fetch("/api/auth/logout", {
+      method: "POST",
+      credentials: "same-origin"
+    });
+  } catch (error) {
+    console.warn("Backend logout warning:", error);
+  }
+
   walletState.provider = null;
   walletState.walletName = null;
   walletState.publicKey = null;
@@ -305,6 +315,7 @@ async function signOwnershipMessage() {
     const requestResponse = await fetch("/api/auth/request", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
       body: JSON.stringify({ wallet: publicKey })
     });
 
@@ -340,6 +351,7 @@ async function signOwnershipMessage() {
     const verifyResponse = await fetch("/api/auth/verify", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
       body: JSON.stringify({
         wallet: publicKey,
         nonce: requestData.nonce,
@@ -395,10 +407,10 @@ function renderOwnershipVerified() {
   setText("resultTitle", "Wallet Ownership Verified");
   setText(
     "resultSubtitle",
-    "Your cryptographic signature is valid. Balance verification is next."
+    "💙 Welcome to the Sanctuary. Your wallet ownership is verified."
   );
   setText("rankCurrent", "Ownership verified");
-  setText("rankNext", "Next: SAINT Balance Check");
+  setText("rankNext", "Secure session active — next: SAINT Balance Check");
   document.getElementById("holderProgressBar").style.width = "66%";
 
   setStatus("Wallet ownership verified successfully.", "success");
@@ -462,3 +474,38 @@ document.addEventListener("click", (event) => {
   event.stopPropagation();
   connectWallet(option.dataset.wallet);
 }, true);
+
+
+async function checkExistingSanctuarySession() {
+  try {
+    const response = await fetch("/api/auth/session", {
+      method: "GET",
+      credentials: "same-origin",
+      headers: { "Accept": "application/json" }
+    });
+
+    if (!response.ok) return;
+
+    const data = await response.json();
+
+    if (!data.ok || !data.authenticated || !data.wallet) return;
+
+    walletState.publicKey = data.wallet;
+    walletState.ownershipVerified = true;
+
+    setText("resultWallet", abbreviate(data.wallet));
+    setText("resultStatus", "Ownership Verified");
+    setText("resultTitle", "💙 Welcome to the Sanctuary");
+    setText(
+      "resultSubtitle",
+      "Your secure authentication session is active. Connect the same wallet to continue."
+    );
+    setText("rankCurrent", "Ownership verified");
+    setText("rankNext", "Next: SAINT Balance Check");
+    document.getElementById("holderProgressBar").style.width = "66%";
+    setStatus("Secure Sanctuary session restored.", "success");
+    setGuardianMessage("Welcome back, Saint. Your secure session is active.");
+  } catch (error) {
+    console.warn("Session restore warning:", error);
+  }
+}
