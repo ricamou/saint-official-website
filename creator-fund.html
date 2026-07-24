@@ -4,11 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="dark light" />
-  <style>
-    html,body{min-height:100%;background:#061827;color:#f8f8f4}
-    .loader{background:#061827}
-  </style>
-  <noscript><style>.loader{display:none!important}.language-modal{display:none!important}</style></noscript>
 
   <title>Creator Fund — The SAINT Movement</title>
 <link rel="icon" type="image/png" sizes="512x512" href="favicon.png">
@@ -132,22 +127,6 @@
       phantomUrl:"phantom://",
       solscanUrl: "https://solscan.io/token/GUdYAzh14TQcwUSBw79rnFJHZCv64fugTEsq1etDpump"
     };
-  </script>
-  <script>
-    (function () {
-      function unlockSite() {
-        var loader = document.getElementById('loader');
-        if (loader) {
-          loader.classList.add('hidden');
-          window.setTimeout(function(){
-            if (loader && loader.parentNode) loader.parentNode.removeChild(loader);
-          }, 700);
-        }
-      }
-      document.addEventListener('DOMContentLoaded', unlockSite);
-      window.addEventListener('pageshow', unlockSite);
-      window.setTimeout(unlockSite, 2500);
-    })();
   </script>
   <script src="js/app.js" defer></script>
 </body>

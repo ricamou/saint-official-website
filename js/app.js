@@ -1,43 +1,19 @@
 
-/* Browser compatibility guard for in-app browsers (X, Instagram, Telegram). */
-const saintStorage = {
-  get(key) {
-    try { return window.localStorage.getItem(key); } catch (_) { return null; }
-  },
-  set(key, value) {
-    try { window.localStorage.setItem(key, value); return true; } catch (_) { return false; }
-  }
-};
-
-function releaseSaintLoader() {
-  const loader = document.getElementById("loader");
-  if (!loader) return;
-  loader.classList.add("hidden");
-  window.setTimeout(() => {
-    if (loader && loader.parentNode) loader.parentNode.removeChild(loader);
-  }, 700);
-}
-
-// Do not allow an embedded browser to keep the site covered forever.
-document.addEventListener("DOMContentLoaded", releaseSaintLoader, { once: true });
-window.addEventListener("pageshow", releaseSaintLoader, { once: true });
-window.setTimeout(releaseSaintLoader, 2500);
-
 (function(){
 const T={"en": {"label": "English", "home": "Home", "vision": "Vision", "transparency": "Transparency", "creator": "Creator Fund", "community": "Community", "sanctuary": "Sanctuary", "contact": "Contact", "buy": "Buy", "heroTitle": "A Web3 Movement Built for Trust.", "heroSubtitle": "A Crypto Community With a Soul.", "heroText": "$SAINT is a Solana-powered community movement designed around transparency, purpose, and long-term trust.", "pump": "Buy on Pump.fun", "phantom": "Open Phantom", "dashboard": "Live Dashboard", "copy": "Copy", "ca": "Official CA", "join": "Join The Movement", "become": "Become a Saint.", "footer": "A Crypto Community With a Soul.", "contactTitle": "Let's Build Something Together.", "contactText": "Use the form below to prepare an email to the official SAINT contact address.", "send": "Send Message", "name": "Full Name", "email": "Email", "subject": "Subject", "reason": "Reason", "message": "Message", "thanks": "✅ Thank you!", "thanksText": "Your email application has been opened. Please send the message from there, and we’ll get back to you as soon as possible.", "treasuryEyebrow": "On-chain transparency", "treasuryHeading": "$SAINT Community Treasury", "treasuryIntro": "Public wallet designated to receive and hold community treasury funds and project fees.", "treasuryPublic": "Public and verifiable", "treasuryWalletTitle": "$SAINT Community Treasury Wallet", "treasuryBalance": "Current SOL balance", "treasuryAddress": "Public address", "copyAddress": "Copy address", "treasuryLoading": "Consulting the Solana blockchain…", "lastUpdated": "Last updated:", "consultNow": "Consult now", "viewSolscan": "View on Solscan ↗", "treasuryManifestoTitle": "Community Treasury", "treasuryManifestoIntro": "The $SAINT Community Treasury is fully public and verifiable. Every holder can track every transaction on-chain, while charitable allocations are decided by community vote.", "treasuryBelongs": "The treasury belongs to the community.", "treasuryTransactions": "Every transaction is public.", "treasuryInitiatives": "Every charitable initiative is chosen by community vote.", "treasuryFoundation": "Transparency isn't a promise — it's our foundation."}, "pt": {"label": "Português", "home": "Início", "vision": "Visão", "transparency": "Transparência", "creator": "Creator Fund", "community": "Comunidade", "sanctuary": "Santuário", "contact": "Contato", "buy": "Comprar", "heroTitle": "Um movimento Web3 construído para gerar confiança.", "heroSubtitle": "Uma comunidade cripto com alma.", "heroText": "$SAINT é um movimento comunitário na Solana, criado em torno de transparência, propósito e confiança de longo prazo.", "pump": "Comprar na Pump.fun", "phantom": "Abrir Phantom", "dashboard": "Dashboard ao Vivo", "copy": "Copiar", "ca": "CA Oficial", "join": "Junte-se ao Movimento", "become": "Torne-se um Santo.", "footer": "Uma comunidade cripto com alma.", "contactTitle": "Vamos construir algo juntos.", "contactText": "Use o formulário abaixo para preparar um e-mail para o contato oficial da SAINT.", "send": "Enviar Mensagem", "name": "Nome completo", "email": "E-mail", "subject": "Assunto", "reason": "Motivo", "message": "Mensagem", "thanks": "✅ Obrigado!", "thanksText": "Seu aplicativo de e-mail foi aberto. Envie a mensagem por lá e responderemos o mais rápido possível.", "treasuryEyebrow": "Transparência on-chain", "treasuryHeading": "Tesouraria Comunitária $SAINT", "treasuryIntro": "Carteira pública destinada a receber e guardar os fundos da tesouraria comunitária e as taxas do projeto.", "treasuryPublic": "Pública e verificável", "treasuryWalletTitle": "Carteira da Tesouraria Comunitária $SAINT", "treasuryBalance": "Saldo atual em SOL", "treasuryAddress": "Endereço público", "copyAddress": "Copiar endereço", "treasuryLoading": "Consultando a blockchain da Solana…", "lastUpdated": "Última atualização:", "consultNow": "Consultar agora", "viewSolscan": "Ver no Solscan ↗", "treasuryManifestoTitle": "Tesouraria da Comunidade", "treasuryManifestoIntro": "A Tesouraria da Comunidade $SAINT é totalmente pública e verificável. Todos os holders podem acompanhar cada transação na blockchain, enquanto a destinação dos recursos para ações beneficentes é decidida por votação da comunidade.", "treasuryBelongs": "A tesouraria pertence à comunidade.", "treasuryTransactions": "Cada transação é pública.", "treasuryInitiatives": "Cada iniciativa beneficente é escolhida por votação da comunidade.", "treasuryFoundation": "Transparência não é uma promessa — é a nossa fundação."}, "es": {"label": "Español", "home": "Inicio", "vision": "Visión", "transparency": "Transparencia", "creator": "Creator Fund", "community": "Comunidad", "sanctuary": "Santuario", "contact": "Contacto", "buy": "Comprar", "heroTitle": "Un movimiento Web3 construido para generar confianza.", "heroSubtitle": "Una comunidad cripto con alma.", "heroText": "$SAINT es un movimiento comunitario en Solana, creado alrededor de la transparencia, el propósito y la confianza a largo plazo.", "pump": "Comprar en Pump.fun", "phantom": "Abrir Phantom", "dashboard": "Dashboard en Vivo", "copy": "Copiar", "ca": "CA Oficial", "join": "Únete al Movimiento", "become": "Conviértete en un Saint.", "footer": "Una comunidad cripto con alma.", "contactTitle": "Construyamos algo juntos.", "contactText": "Usa el formulario para preparar un correo al contacto oficial de SAINT.", "send": "Enviar Mensaje", "name": "Nombre completo", "email": "Correo", "subject": "Asunto", "reason": "Motivo", "message": "Mensaje", "thanks": "✅ ¡Gracias!", "thanksText": "Tu aplicación de correo fue abierta. Envía el mensaje desde allí y responderemos lo antes posible.", "treasuryEyebrow": "Transparencia on-chain", "treasuryHeading": "Tesorería Comunitaria de $SAINT", "treasuryIntro": "Cartera pública destinada a recibir y conservar los fondos de la tesorería comunitaria y las comisiones del proyecto.", "treasuryPublic": "Pública y verificable", "treasuryWalletTitle": "Cartera de la Tesorería Comunitaria de $SAINT", "treasuryBalance": "Saldo actual en SOL", "treasuryAddress": "Dirección pública", "copyAddress": "Copiar dirección", "treasuryLoading": "Consultando la blockchain de Solana…", "lastUpdated": "Última actualización:", "consultNow": "Consultar ahora", "viewSolscan": "Ver en Solscan ↗", "treasuryManifestoTitle": "Tesorería de la Comunidad", "treasuryManifestoIntro": "La Tesorería de la Comunidad $SAINT es totalmente pública y verificable. Todos los holders pueden seguir cada transacción en la blockchain, mientras que el destino de los fondos benéficos se decide mediante votación de la comunidad.", "treasuryBelongs": "La tesorería pertenece a la comunidad.", "treasuryTransactions": "Cada transacción es pública.", "treasuryInitiatives": "Cada iniciativa benéfica es elegida mediante votación de la comunidad.", "treasuryFoundation": "La transparencia no es una promesa: es nuestra base."}, "zh": {"label": "中文", "home": "首页", "vision": "愿景", "transparency": "透明度", "creator": "创作者基金", "community": "社区", "sanctuary": "圣殿", "contact": "联系", "buy": "购买", "heroTitle": "一个为信任而生的 Web3 运动。", "heroSubtitle": "一个有灵魂的加密社区。", "heroText": "$SAINT 是一个基于 Solana 的社区运动，围绕透明度、使命感和长期信任而建立。", "pump": "在 Pump.fun 购买", "phantom": "打开 Phantom", "dashboard": "实时仪表盘", "copy": "复制", "ca": "官方 CA", "join": "加入运动", "become": "成为一名 Saint。", "footer": "一个有灵魂的加密社区。", "contactTitle": "让我们一起构建未来。", "contactText": "使用下方表单准备发送至 SAINT 官方邮箱的邮件。", "send": "发送消息", "name": "姓名", "email": "邮箱", "subject": "主题", "reason": "原因", "message": "消息", "thanks": "✅ 谢谢！", "thanksText": "你的邮件应用已打开。请在那里发送消息，我们会尽快回复。", "treasuryEyebrow": "链上透明度", "treasuryHeading": "$SAINT 社区金库", "treasuryIntro": "用于接收和保管社区金库资金及项目费用的公开钱包。", "treasuryPublic": "公开且可验证", "treasuryWalletTitle": "$SAINT 社区金库钱包", "treasuryBalance": "当前 SOL 余额", "treasuryAddress": "公开地址", "copyAddress": "复制地址", "treasuryLoading": "正在查询 Solana 区块链…", "lastUpdated": "最后更新：", "consultNow": "立即查询", "viewSolscan": "在 Solscan 查看 ↗", "treasuryManifestoTitle": "社区金库", "treasuryManifestoIntro": "$SAINT 社区金库完全公开且可验证。每位持有者都可以在区块链上查看每一笔交易，而慈善资金的分配将由社区投票决定。", "treasuryBelongs": "金库属于社区。", "treasuryTransactions": "每一笔交易都是公开的。", "treasuryInitiatives": "每一项慈善计划都由社区投票决定。", "treasuryFoundation": "透明不是一句承诺，而是我们的根基。"}};
-function lang(){const s=saintStorage.get('saint-lang');if(s&&T[s])return s;const n=(navigator.language||'en').toLowerCase();if(n.startsWith('pt'))return'pt';if(n.startsWith('es'))return'es';if(n.startsWith('zh'))return'zh';return'en'}
-function set(l){if(!T[l])l='en';saintStorage.set('saint-lang',l);document.documentElement.lang=l==='zh'?'zh-CN':l;document.querySelectorAll('[data-i18n]').forEach(e=>{const k=e.dataset.i18n;if(T[l][k])e.textContent=T[l][k]});document.querySelectorAll('[data-i18n-placeholder]').forEach(e=>{const k=e.dataset.i18nPlaceholder;if(T[l][k])e.placeholder=T[l][k]});document.querySelectorAll('[data-lang-current]').forEach(e=>e.textContent=T[l].label);window.dispatchEvent(new CustomEvent('saintLanguageChanged',{detail:{lang:l}}))}
+function lang(){const s=localStorage.getItem('saint-lang');if(s&&T[s])return s;const n=(navigator.language||'en').toLowerCase();if(n.startsWith('pt'))return'pt';if(n.startsWith('es'))return'es';if(n.startsWith('zh'))return'zh';return'en'}
+function set(l){if(!T[l])l='en';localStorage.setItem('saint-lang',l);document.documentElement.lang=l==='zh'?'zh-CN':l;document.querySelectorAll('[data-i18n]').forEach(e=>{const k=e.dataset.i18n;if(T[l][k])e.textContent=T[l][k]});document.querySelectorAll('[data-i18n-placeholder]').forEach(e=>{const k=e.dataset.i18nPlaceholder;if(T[l][k])e.placeholder=T[l][k]});document.querySelectorAll('[data-lang-current]').forEach(e=>e.textContent=T[l].label);window.dispatchEvent(new CustomEvent('saintLanguageChanged',{detail:{lang:l}}))}
 window.setSaintLanguage=set;document.addEventListener('DOMContentLoaded',()=>{set(lang());document.querySelectorAll('[data-lang]').forEach(b=>b.onclick=()=>set(b.dataset.lang))})
 })();
 
 
 const CONFIG = window.SAINT_CONFIG;
 const root = document.documentElement;
-const savedTheme = saintStorage.get("saint-theme");
+const savedTheme = localStorage.getItem("saint-theme");
 if (savedTheme) root.setAttribute("data-theme", savedTheme);
 
 window.addEventListener("load", () => {
-  releaseSaintLoader();
+  document.getElementById("loader")?.classList.add("hidden");
   createParticles();
   fetchDexData();
 });
@@ -56,7 +32,7 @@ function showToast(message) {
 document.getElementById("themeToggle")?.addEventListener("click", () => {
   const next = root.getAttribute("data-theme") === "light" ? "dark" : "light";
   root.setAttribute("data-theme", next);
-  saintStorage.set("saint-theme", next);
+  localStorage.setItem("saint-theme", next);
 });
 const navbar = document.getElementById("navbar");
 window.addEventListener("scroll", () => navbar?.classList.toggle("scrolled", window.scrollY > 40));
@@ -216,8 +192,8 @@ function openPhantomApp(event) {
 
 /* v4.2 first-visit language modal */
 function chooseInitialLanguage(lang) {
-  saintStorage.set("saint-lang", lang);
-  saintStorage.set("saint-language-confirmed", "true");
+  localStorage.setItem("saint-lang", lang);
+  localStorage.setItem("saint-language-confirmed", "true");
 
   if (typeof window.setSaintLanguage === "function") {
     window.setSaintLanguage(lang);
@@ -234,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const modal = document.getElementById("languageModal");
   if (!modal) return;
 
-  const confirmed = saintStorage.get("saint-language-confirmed") === "true";
+  const confirmed = localStorage.getItem("saint-language-confirmed") === "true";
 
   if (confirmed) {
     modal.remove();
@@ -275,7 +251,7 @@ const treasuryMessages = {
 };
 
 function getTreasuryLanguage() {
-  const saved = saintStorage.get("saint-lang");
+  const saved = localStorage.getItem("saint-lang");
   return treasuryMessages[saved] ? saved : "en";
 }
 
