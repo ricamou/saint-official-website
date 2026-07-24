@@ -1936,3 +1936,27 @@ body.saint-boom-shake{animation:saintScreenShake .46s linear}
 .wallet-option-logo img{width:100%;height:100%;display:block;object-fit:cover}
 .wallet-option:hover .wallet-option-logo{transform:scale(1.04)}
 .wallet-option-logo{transition:transform .18s ease}
+
+/* Sanctuary 1M cinematic timing refinement — visual only */
+.saint-boom-overlay{transition:opacity .55s ease,visibility .55s ease;background:radial-gradient(circle at center,rgba(15,13,6,.78) 0%,rgba(2,3,8,.96) 58%,rgba(1,2,5,.99) 100%)}
+.saint-boom-content{transform:scale(.72);filter:blur(16px)}
+.saint-boom-overlay.active .saint-boom-content{animation:saintBoomRevealSlow 4.65s cubic-bezier(.16,1,.3,1) forwards}
+.saint-boom-word{opacity:0;animation:none}
+.saint-boom-overlay.active .saint-boom-word{animation:saintBoomWord 4.45s ease forwards}
+.saint-boom-million{min-width:7.8ch;transition:transform .24s ease,filter .24s ease,text-shadow .24s ease;filter:blur(0)}
+.saint-boom-million.million-hit{animation:saintMillionHit .9s cubic-bezier(.16,1,.3,1) both}
+.saint-boom-token,.saint-boom-message{opacity:0;transform:translateY(12px)}
+.saint-boom-overlay.active .saint-boom-token{animation:saintCaptionIn 4.5s ease forwards}
+.saint-boom-overlay.active .saint-boom-message{animation:saintMessageIn 4.55s ease forwards}
+.saint-boom-overlay.active .saint-boom-flash{animation:saintFlashSlow 2.35s ease-out forwards}
+.saint-boom-particle{filter:blur(.15px)}
+.saint-boom-overlay.active .saint-boom-particle{animation:saintParticleDepth var(--duration) cubic-bezier(.1,.7,.2,1) var(--delay) forwards}
+body.saint-boom-shake{animation:saintScreenShakeSoft .58s linear}
+@keyframes saintBoomRevealSlow{0%{transform:scale(.72);opacity:0;filter:blur(16px)}8%{opacity:1}18%{transform:scale(1.03);filter:blur(0)}76%{transform:scale(1);opacity:1;filter:blur(0)}90%{opacity:1}100%{transform:scale(1.025);opacity:0;filter:blur(3px)}}
+@keyframes saintBoomWord{0%,4%{opacity:0;transform:scale(.82);filter:blur(18px)}12%{opacity:1;transform:scale(1.08);filter:blur(1px)}20%,72%{opacity:1;transform:scale(1);filter:blur(0)}88%,100%{opacity:0;transform:scale(1.02);filter:blur(3px)}}
+@keyframes saintCaptionIn{0%,48%{opacity:0;transform:translateY(14px)}58%,86%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-5px)}}
+@keyframes saintMessageIn{0%,58%{opacity:0;transform:translateY(14px)}68%,88%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-5px)}}
+@keyframes saintMillionHit{0%{transform:scale(.96);filter:brightness(1);text-shadow:0 8px 50px rgba(244,196,75,.34)}38%{transform:scale(1.14);filter:brightness(1.55);text-shadow:0 0 24px rgba(255,255,220,.92),0 0 65px rgba(246,211,107,.95),0 0 130px rgba(184,116,18,.75)}100%{transform:scale(1);filter:brightness(1);text-shadow:0 8px 50px rgba(244,196,75,.34)}}
+@keyframes saintFlashSlow{0%{opacity:0;transform:scale(.05)}10%{opacity:.95}30%{opacity:.72;transform:scale(.62)}64%{opacity:.3;transform:scale(1.18)}100%{opacity:0;transform:scale(1.7)}}
+@keyframes saintParticleDepth{0%{opacity:0;transform:translate(-50%,-50%) scale(.15)}12%{opacity:1}70%{opacity:.88}100%{opacity:0;transform:translate(calc(-50% + var(--x) + var(--drift)),calc(-50% + var(--y))) scale(1.35)}}
+@keyframes saintScreenShakeSoft{0%,100%{transform:translate(0)}16%{transform:translate(-3px,2px)}32%{transform:translate(3px,-2px)}48%{transform:translate(-2px,-1px)}64%{transform:translate(2px,1px)}80%{transform:translate(-1px,1px)}}

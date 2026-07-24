@@ -869,35 +869,59 @@ async function enterTheSanctuary(event) {
 function playSaintMillionBoom() {
   const overlay = document.getElementById("saintBoomOverlay");
   const particles = document.getElementById("saintBoomParticles");
-  if (!overlay || !particles || overlay.classList.contains("active")) return;
+  const million = document.getElementById("saintBoomMillion");
+  if (!overlay || !particles || !million || overlay.classList.contains("active")) return;
 
   particles.innerHTML = "";
-  const count = window.matchMedia("(max-width: 700px)").matches ? 42 : 72;
+  const isMobile = window.matchMedia("(max-width: 700px)").matches;
+  const count = isMobile ? 54 : 96;
 
   for (let index = 0; index < count; index += 1) {
     const particle = document.createElement("span");
     particle.className = "saint-boom-particle";
     const angle = Math.random() * Math.PI * 2;
-    const distance = 130 + Math.random() * Math.min(window.innerWidth, window.innerHeight) * 0.58;
+    const distance = 120 + Math.random() * Math.min(window.innerWidth, window.innerHeight) * 0.72;
+    const isSlow = Math.random() < 0.38;
     particle.style.setProperty("--x", `${Math.cos(angle) * distance}px`);
     particle.style.setProperty("--y", `${Math.sin(angle) * distance}px`);
-    particle.style.setProperty("--size", `${3 + Math.random() * 8}px`);
-    particle.style.setProperty("--duration", `${1.2 + Math.random() * 1.2}s`);
-    particle.style.setProperty("--delay", `${Math.random() * 0.22}s`);
+    particle.style.setProperty("--size", `${isSlow ? 6 + Math.random() * 11 : 2 + Math.random() * 7}px`);
+    particle.style.setProperty("--duration", `${isSlow ? 3.2 + Math.random() * 1.4 : 1.8 + Math.random() * 1.5}s`);
+    particle.style.setProperty("--delay", `${Math.random() * 0.75}s`);
+    particle.style.setProperty("--drift", `${-18 + Math.random() * 36}px`);
     particles.appendChild(particle);
   }
+
+  const steps = [100000, 250000, 480000, 720000, 950000, 1000000];
+  let stepIndex = 0;
+  million.textContent = steps[0].toLocaleString("en-US");
+  million.classList.remove("million-hit");
 
   overlay.setAttribute("aria-hidden", "false");
   overlay.classList.remove("fade-out");
   void overlay.offsetWidth;
   overlay.classList.add("active");
-  document.body.classList.add("saint-boom-shake");
 
-  window.setTimeout(() => document.body.classList.remove("saint-boom-shake"), 520);
-  window.setTimeout(() => overlay.classList.add("fade-out"), 2550);
+  window.setTimeout(() => {
+    const counterTimer = window.setInterval(() => {
+      stepIndex += 1;
+      if (stepIndex >= steps.length) {
+        window.clearInterval(counterTimer);
+        million.textContent = "1,000,000";
+        million.classList.add("million-hit");
+        document.body.classList.add("saint-boom-shake");
+        window.setTimeout(() => document.body.classList.remove("saint-boom-shake"), 620);
+        return;
+      }
+      million.textContent = steps[stepIndex].toLocaleString("en-US");
+    }, 360);
+  }, 820);
+
+  window.setTimeout(() => overlay.classList.add("fade-out"), 4550);
   window.setTimeout(() => {
     overlay.classList.remove("active", "fade-out");
     overlay.setAttribute("aria-hidden", "true");
+    million.classList.remove("million-hit");
+    million.textContent = "100,000";
     particles.innerHTML = "";
-  }, 2900);
+  }, 5000);
 }
