@@ -159,11 +159,10 @@ function getWalletProvider(name) {
 }
 
 function updateWalletAvailability() {
-  const phantomInstalled = Boolean(getWalletProvider("phantom"));
   const mainLabel = document.getElementById("connectWalletLabel");
 
   if (mainLabel) {
-    mainLabel.textContent = phantomInstalled ? "Connect Phantom" : "Connect Wallet";
+    mainLabel.textContent = "Connect Wallet";
   }
 
   ["phantom", "solflare", "backpack", "jupiter"].forEach((name) => {

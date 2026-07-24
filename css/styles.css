@@ -1928,3 +1928,11 @@ body.saint-boom-shake{animation:saintScreenShake .46s linear}
 @keyframes saintParticle{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}12%{opacity:1}75%{opacity:.9}100%{opacity:0;transform:translate(calc(-50% + var(--x)),calc(-50% + var(--y))) scale(1.25)}}
 @keyframes saintScreenShake{0%,100%{transform:translate(0)}15%{transform:translate(-5px,3px)}30%{transform:translate(5px,-3px)}45%{transform:translate(-3px,-2px)}60%{transform:translate(3px,2px)}75%{transform:translate(-1px,1px)}}
 @media (prefers-reduced-motion:reduce){.saint-boom-overlay.active .saint-boom-content,.saint-boom-overlay.active .saint-boom-flash,.saint-boom-overlay.active .saint-boom-particle,body.saint-boom-shake{animation-duration:.01ms!important;animation-delay:0ms!important}}
+
+/* Wallet selector logos */
+.wallet-connect-grid{display:grid!important;grid-template-columns:repeat(2,1fr);gap:3px;padding:5px;background:rgba(255,255,255,.07)!important;overflow:hidden}
+.wallet-connect-grid img{width:19px;height:19px;border-radius:6px;display:block;object-fit:cover}
+.wallet-option-logo{padding:0!important;overflow:hidden;background:transparent!important}
+.wallet-option-logo img{width:100%;height:100%;display:block;object-fit:cover}
+.wallet-option:hover .wallet-option-logo{transform:scale(1.04)}
+.wallet-option-logo{transition:transform .18s ease}
