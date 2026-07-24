@@ -1,4 +1,68 @@
 
+// Jupiter Wallet registers through the Solana Wallet Standard.
+// This lightweight registry keeps the existing wallet flow unchanged and only
+// adapts Jupiter's standard interface to the provider shape already used here.
+const saintStandardWallets = new Map();
+
+function registerSaintStandardWallet(...wallets) {
+  wallets.flat().forEach((wallet) => {
+    if (wallet?.name) saintStandardWallets.set(wallet.name.toLowerCase(), wallet);
+  });
+}
+
+if (typeof window !== "undefined") {
+  window.addEventListener("wallet-standard:register-wallet", (event) => {
+    try { event.detail(registerSaintStandardWallet); } catch (_) {}
+  });
+
+  try {
+    window.dispatchEvent(new CustomEvent("wallet-standard:app-ready", {
+      detail: registerSaintStandardWallet
+    }));
+  } catch (_) {}
+}
+
+function findJupiterStandardWallet() {
+  return [...saintStandardWallets.values()].find((wallet) =>
+    /jupiter/i.test(wallet?.name || "") &&
+    wallet?.features?.["standard:connect"] &&
+    wallet?.features?.["solana:signMessage"]
+  ) || null;
+}
+
+function createJupiterStandardProvider(wallet) {
+  let activeAccount = wallet.accounts?.[0] || null;
+
+  return {
+    isJupiter: true,
+    get publicKey() {
+      const address = activeAccount?.address;
+      return address ? { toString: () => address } : null;
+    },
+    async connect() {
+      const result = await wallet.features["standard:connect"].connect({ silent: false });
+      activeAccount = result?.accounts?.[0] || wallet.accounts?.[0] || activeAccount;
+      if (!activeAccount?.address) throw new Error("Jupiter Wallet did not return an account.");
+      return { publicKey: { toString: () => activeAccount.address } };
+    },
+    async disconnect() {
+      const disconnect = wallet.features?.["standard:disconnect"]?.disconnect;
+      if (disconnect) await disconnect();
+      activeAccount = null;
+    },
+    async signMessage(message) {
+      activeAccount = activeAccount || wallet.accounts?.[0] || null;
+      if (!activeAccount) throw new Error("Connect Jupiter Wallet before signing.");
+
+      const signMessage = wallet.features["solana:signMessage"].signMessage;
+      const results = await signMessage({ account: activeAccount, message });
+      const signed = Array.isArray(results) ? results[0] : results;
+      if (!signed?.signature) throw new Error("Jupiter Wallet did not return a signature.");
+      return signed;
+    }
+  };
+}
+
 function isMobileDevice() {
   return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent) ||
     window.matchMedia("(max-width: 820px)").matches;
@@ -76,6 +140,21 @@ function getWalletProvider(name) {
     return provider?.connect ? provider : null;
   }
 
+  if (name === "jupiter") {
+    // Prefer Wallet Standard, which is Jupiter Wallet's dApp connection method.
+    const standardWallet = findJupiterStandardWallet();
+    if (standardWallet) return createJupiterStandardProvider(standardWallet);
+
+    // Safe fallback for injected-provider versions.
+    const provider =
+      window.jupiter?.solana ||
+      window.jupiterWallet?.solana ||
+      window.jupiterWallet ||
+      (window.solana?.isJupiter ? window.solana : null);
+
+    return provider?.connect && provider?.signMessage ? provider : null;
+  }
+
   return null;
 }
 
@@ -87,7 +166,7 @@ function updateWalletAvailability() {
     mainLabel.textContent = phantomInstalled ? "Connect Phantom" : "Connect Wallet";
   }
 
-  ["phantom", "solflare", "backpack"].forEach((name) => {
+  ["phantom", "solflare", "backpack", "jupiter"].forEach((name) => {
     const installed = Boolean(getWalletProvider(name));
     const status = document.getElementById(name + "Status");
     const button = document.querySelector(`[data-wallet="${name}"]`);
